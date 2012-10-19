@@ -2,9 +2,10 @@ package com.dve.client.canvas;
 
 import java.util.logging.Logger;
 
-import com.dve.client.LinkShape;
-import com.dve.client.LinkShapeLabel;
 import com.dve.client.link.LinkDialog;
+import com.dve.client.link.LinkShape;
+import com.dve.client.link.LinkShapeLabel;
+import com.dve.client.selector.SCL;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;
@@ -35,7 +36,6 @@ import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 public class CanvasPanel extends Composite {
 	
 	CanvasPanel canvasPanel;
-	LinkDialog linkShapeDialog;
 	
 	ScrollPanel scrollPanel = new ScrollPanel();
 	
@@ -66,7 +66,6 @@ public class CanvasPanel extends Composite {
 
 	public CanvasPanel() {
 		canvasPanel = this;
-		linkShapeDialog = new LinkDialog(canvasPanel);
 		
 		canvas0 = Canvas.createIfSupported();
 		canvas1 = Canvas.createIfSupported();
@@ -159,8 +158,8 @@ public class CanvasPanel extends Composite {
 				int y = event.getRelativeY(canvas1.getCanvasElement());
 				
 				if(!editMode) {
-					for(int i=0; i<linkShapeDialog.flexTable.getRowCount(); i++) {
-						LinkShapeLabel linkShapeLabel = (LinkShapeLabel) linkShapeDialog.flexTable.getWidget(i, 0);
+					for(int i=0; i<SCL.getLinkDialog().flexTable.getRowCount(); i++) {
+						LinkShapeLabel linkShapeLabel = (LinkShapeLabel) SCL.getLinkDialog().flexTable.getWidget(i, 0);
 		        		if(linkShapeLabel.linkShape.contains(x, y)) {
 		        			Window.alert(linkShapeLabel.label.getText());
 		        		}
@@ -263,12 +262,6 @@ public class CanvasPanel extends Composite {
 		scrollPanel.setPixelSize(Window.getClientWidth()-50, Window.getClientHeight()-100);
 		scrollPanel.setWidget(absolutePanel);
 		
-		linkShapeDialog.update(0, 0);
-		linkShapeDialog.show();
-		
-		clear();
-		draw();
-		
 		initWidget(scrollPanel);
 		
 	}
@@ -287,7 +280,7 @@ public class CanvasPanel extends Composite {
 	
 	public void addLink() {
 		LinkShape linkShape = new LinkShape(canvasPanel, scrollPanel.getHorizontalScrollPosition()+(scrollPanel.getOffsetWidth()/2), scrollPanel.getVerticalScrollPosition()+(scrollPanel.getOffsetHeight()/2));
-		linkShapeDialog.addLinkShape(linkShape);
+		SCL.getLinkDialog().addLinkShape(linkShape);
 		
 	}
 	
@@ -301,8 +294,8 @@ public class CanvasPanel extends Composite {
 	}
 	
 	public void draw() {
-    	for(int i=0; i<linkShapeDialog.flexTable.getRowCount(); i++) {
-    		LinkShape linkShape = ((LinkShapeLabel) linkShapeDialog.flexTable.getWidget(i, 0)).linkShape;
+    	for(int i=0; i<SCL.getLinkDialog().flexTable.getRowCount(); i++) {
+    		LinkShape linkShape = ((LinkShapeLabel) SCL.getLinkDialog().flexTable.getWidget(i, 0)).linkShape;
     		linkShape.draw();
     		
     	}

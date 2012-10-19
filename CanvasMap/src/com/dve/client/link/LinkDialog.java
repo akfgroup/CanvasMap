@@ -1,7 +1,5 @@
 package com.dve.client.link;
 
-import com.dve.client.LinkShape;
-import com.dve.client.LinkShapeLabel;
 import com.dve.client.canvas.CanvasPanel;
 import com.dve.client.dialogs.nonmodal.NonModalClickhandler;
 import com.dve.client.dialogs.nonmodal.NonModalDialog;
@@ -30,7 +28,7 @@ public class LinkDialog {
 		nonModalDialog.setAutoHideEnabled(false);
 		nonModalDialog.setPreviewingAllNativeEvents(false);
 		nonModalDialog.setWidget(flexTable);
-		nonModalDialog.setText("Link Shape");
+		nonModalDialog.setText("Links");
 		
 		nonModalDialog.addClickHandler(new NonModalClickhandler());
 		

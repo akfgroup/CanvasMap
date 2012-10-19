@@ -1,4 +1,4 @@
-package com.dve.client;
+package com.dve.client.link;
 
 import gwt.awt.Point;
 import gwt.awt.Polygon;
