@@ -1,6 +1,6 @@
 package com.dve.client;
 
-import com.dve.client.dialog.LinkShapeDialog;
+import com.dve.client.link.LinkDialog;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -19,14 +19,14 @@ public class LinkShapeLabel extends Composite {
 	
 	FocusPanel focusPanel = new FocusPanel();
 	
-	Label label = new Label();
+	public Label label = new Label();
 	TextBox textBox = new TextBox();
 	
 	LinkShapeLabel linkShapeLabel;
-	LinkShapeDialog linkShapeDialog;
-	LinkShape linkShape;
+	LinkDialog linkShapeDialog;
+	public LinkShape linkShape;
 	
-	public LinkShapeLabel(final LinkShapeDialog linkShapeDialog, final LinkShape linkShape) {
+	public LinkShapeLabel(final LinkDialog linkShapeDialog, final LinkShape linkShape) {
 		this.linkShapeDialog = linkShapeDialog;
 		this.linkShape = linkShape;
 		this.linkShapeLabel = this;

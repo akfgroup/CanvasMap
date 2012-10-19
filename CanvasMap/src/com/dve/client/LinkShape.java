@@ -7,10 +7,12 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import com.dve.client.canvas.CanvasPanel;
+
 
 public class LinkShape {
 
-	CanvasMap canvasMap;
+	CanvasPanel canvasPanel;
 	
 	String color = "black";
 	int weight = 5;
@@ -29,16 +31,16 @@ public class LinkShape {
 
 	Logger log = Logger.getLogger(LinkShape.class.getName());
 
-	public LinkShape(CanvasMap canvasMap, int x, int y) {
-		this.canvasMap = canvasMap;
+	public LinkShape(CanvasPanel canvasPanel, int x, int y) {
+		this.canvasPanel = canvasPanel;
 		this.startX = x;
 		this.startY = y;
-		this.zoom = canvasMap.zoom;
+		this.zoom = canvasPanel.zoom;
 
-		Point p1 = new Point(canvasMap.roundIt(x),canvasMap.roundIt(y));
-		Point p2 = new Point(p1.x+(int)(canvasMap.spacing/(1/zoom)), p1.y);
-		Point p3 = new Point(p1.x+(int)(canvasMap.spacing/(1/zoom)), p1.y+(int)(canvasMap.spacing/(1/zoom)));
-		Point p4 = new Point(p1.x, p1.y+(int)(canvasMap.spacing/(1/zoom)));
+		Point p1 = new Point(canvasPanel.roundIt(x),canvasPanel.roundIt(y));
+		Point p2 = new Point(p1.x+(int)(canvasPanel.spacing/(1/zoom)), p1.y);
+		Point p3 = new Point(p1.x+(int)(canvasPanel.spacing/(1/zoom)), p1.y+(int)(canvasPanel.spacing/(1/zoom)));
+		Point p4 = new Point(p1.x, p1.y+(int)(canvasPanel.spacing/(1/zoom)));
 
 		nodes.add(p1);
 		nodes.add(p2);
@@ -63,7 +65,7 @@ public class LinkShape {
 		}
 
 		clear();
-		Point p = new Point(canvasMap.roundIt((int)((double)x*zoom/canvasMap.zoom)),canvasMap.roundIt((int)((double)y*zoom/canvasMap.zoom)));
+		Point p = new Point(canvasPanel.roundIt((int)((double)x*zoom/canvasPanel.zoom)),canvasPanel.roundIt((int)((double)y*zoom/canvasPanel.zoom)));
 		nodes.add(p);
 		draw();
 
@@ -75,9 +77,9 @@ public class LinkShape {
 			if((Math.abs(x-getCoord(nodeDn.x))^2) + (Math.abs(y-getCoord(nodeDn.y))^2) > (nodeRadius^2)) {
 				moving = true;
 				clear();
-				nodeDn.x=(int)((double)x*zoom/canvasMap.zoom);
-				nodeDn.y=(int)((double)y*zoom/canvasMap.zoom);
-				canvasMap.draw();
+				nodeDn.x=(int)((double)x*zoom/canvasPanel.zoom);
+				nodeDn.y=(int)((double)y*zoom/canvasPanel.zoom);
+				canvasPanel.draw();
 				draw();		
 			}
 
@@ -109,8 +111,8 @@ public class LinkShape {
 		Point prevP = null;
 		Point currP = null;
 
-		String prevGlobalCompositeOperation = canvasMap.context1.getGlobalCompositeOperation();
-		canvasMap.context1.setGlobalCompositeOperation("destination-out");
+		String prevGlobalCompositeOperation = canvasPanel.context1.getGlobalCompositeOperation();
+		canvasPanel.context1.setGlobalCompositeOperation("destination-out");
 		
 		Iterator<Point> it = nodes.iterator();
 		while(it.hasNext()) {
@@ -118,19 +120,19 @@ public class LinkShape {
 			prevP = currP;
 
 			
-			canvasMap.context1.setFillStyle("rgba(255,255,255,1.0)");
-			canvasMap.context1.beginPath();
-			canvasMap.context1.arc(getCoord(p.x), getCoord(p.y), nodeRadius+1, 0, Math.PI * 2.0, true);
-			canvasMap.context1.closePath();
-			canvasMap.context1.fill();
+			canvasPanel.context1.setFillStyle("rgba(255,255,255,1.0)");
+			canvasPanel.context1.beginPath();
+			canvasPanel.context1.arc(getCoord(p.x), getCoord(p.y), nodeRadius+1, 0, Math.PI * 2.0, true);
+			canvasPanel.context1.closePath();
+			canvasPanel.context1.fill();
 
 			if(prevP!=null) {
-				canvasMap.context1.setLineWidth(5);
-				canvasMap.context1.setStrokeStyle("rgba(255,255,255,1.0)");
-				canvasMap.context1.beginPath();
-				canvasMap.context1.moveTo(getCoord(prevP.x),getCoord(prevP.y));
-				canvasMap.context1.lineTo(getCoord(p.x), getCoord(p.y));
-				canvasMap.context1.stroke();
+				canvasPanel.context1.setLineWidth(5);
+				canvasPanel.context1.setStrokeStyle("rgba(255,255,255,1.0)");
+				canvasPanel.context1.beginPath();
+				canvasPanel.context1.moveTo(getCoord(prevP.x),getCoord(prevP.y));
+				canvasPanel.context1.lineTo(getCoord(p.x), getCoord(p.y));
+				canvasPanel.context1.stroke();
 			}
 
 			currP = p;
@@ -139,15 +141,15 @@ public class LinkShape {
 
 		if(nodes.size()>0) {
 			Point firstP = nodes.firstElement();
-			canvasMap.context1.setLineWidth(5);
-			canvasMap.context1.setStrokeStyle("rgba(255,255,255,1.0)");
-			canvasMap.context1.beginPath();
-			canvasMap.context1.moveTo(getCoord(currP.x),getCoord(currP.y));
-			canvasMap.context1.lineTo(getCoord(firstP.x), getCoord(firstP.y));
-			canvasMap.context1.stroke();
+			canvasPanel.context1.setLineWidth(5);
+			canvasPanel.context1.setStrokeStyle("rgba(255,255,255,1.0)");
+			canvasPanel.context1.beginPath();
+			canvasPanel.context1.moveTo(getCoord(currP.x),getCoord(currP.y));
+			canvasPanel.context1.lineTo(getCoord(firstP.x), getCoord(firstP.y));
+			canvasPanel.context1.stroke();
 		}
 
-		canvasMap.context1.setGlobalCompositeOperation(prevGlobalCompositeOperation);
+		canvasPanel.context1.setGlobalCompositeOperation(prevGlobalCompositeOperation);
 	}
 
 	public void draw() {
@@ -160,19 +162,19 @@ public class LinkShape {
 			Point p = it.next();
 			prevP = currP;
 
-			canvasMap.context1.setFillStyle(color);
-			canvasMap.context1.beginPath();
-			canvasMap.context1.arc(getCoord(p.x), getCoord(p.y), nodeRadius, 0, Math.PI * 2.0, true);
-			canvasMap.context1.closePath();
-			canvasMap.context1.fill();
+			canvasPanel.context1.setFillStyle(color);
+			canvasPanel.context1.beginPath();
+			canvasPanel.context1.arc(getCoord(p.x), getCoord(p.y), nodeRadius, 0, Math.PI * 2.0, true);
+			canvasPanel.context1.closePath();
+			canvasPanel.context1.fill();
 
 			if(prevP!=null) {
-				canvasMap.context1.setLineWidth(2);
-				canvasMap.context1.setStrokeStyle(color);
-				canvasMap.context1.beginPath();
-				canvasMap.context1.moveTo(getCoord(prevP.x),getCoord(prevP.y));
-				canvasMap.context1.lineTo(getCoord(p.x), getCoord(p.y));
-				canvasMap.context1.stroke();
+				canvasPanel.context1.setLineWidth(2);
+				canvasPanel.context1.setStrokeStyle(color);
+				canvasPanel.context1.beginPath();
+				canvasPanel.context1.moveTo(getCoord(prevP.x),getCoord(prevP.y));
+				canvasPanel.context1.lineTo(getCoord(p.x), getCoord(p.y));
+				canvasPanel.context1.stroke();
 			}
 
 			currP = p;
@@ -181,19 +183,19 @@ public class LinkShape {
 
 		if(nodes.size()>0) {
 			Point firstP = nodes.firstElement();
-			canvasMap.context1.setLineWidth(2);
-			canvasMap.context1.setStrokeStyle(color);
-			canvasMap.context1.beginPath();
-			canvasMap.context1.moveTo(getCoord(currP.x),getCoord(currP.y));
-			canvasMap.context1.lineTo(getCoord(firstP.x), getCoord(firstP.y));
-			canvasMap.context1.stroke();
+			canvasPanel.context1.setLineWidth(2);
+			canvasPanel.context1.setStrokeStyle(color);
+			canvasPanel.context1.beginPath();
+			canvasPanel.context1.moveTo(getCoord(currP.x),getCoord(currP.y));
+			canvasPanel.context1.lineTo(getCoord(firstP.x), getCoord(firstP.y));
+			canvasPanel.context1.stroke();
 		}
 
 	}
 	
 	private int getCoord(int coord) {
 		double x = (double)coord;
-		return (int)(x/zoom*canvasMap.zoom);
+		return (int)(x/zoom*canvasPanel.zoom);
 		
 	}
 
@@ -203,7 +205,7 @@ public class LinkShape {
 		Iterator<Point> it = nodes.iterator();
 		while(it.hasNext()) {
 			Point p = it.next();
-			polygon.addPoint((int)((double)p.x/zoom*canvasMap.zoom), (int)((double)p.y/zoom*canvasMap.zoom));
+			polygon.addPoint((int)((double)p.x/zoom*canvasPanel.zoom), (int)((double)p.y/zoom*canvasPanel.zoom));
 		}
 
 		return polygon.contains(x, y);

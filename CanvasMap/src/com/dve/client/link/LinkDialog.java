@@ -1,13 +1,17 @@
-package com.dve.client.dialog;
+package com.dve.client.link;
 
-import com.dve.client.CanvasMap;
 import com.dve.client.LinkShape;
 import com.dve.client.LinkShapeLabel;
+import com.dve.client.canvas.CanvasPanel;
+import com.dve.client.dialogs.nonmodal.NonModalClickhandler;
+import com.dve.client.dialogs.nonmodal.NonModalDialog;
+import com.dve.client.selector.SC;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlexTable;
 
 
-public class LinkShapeDialog {
+public class LinkDialog {
 	
 	public NonModalDialog nonModalDialog = new NonModalDialog();
 	
@@ -16,23 +20,32 @@ public class LinkShapeDialog {
 	LinkShapeLabel currLabel;
 	LinkShapeLabel prevLabel;
 	
-	LinkShapeDialog linkShapeDialog;
-	public CanvasMap canvasMap;
+	LinkDialog linkShapeDialog;
+	public CanvasPanel canvasPanel;
 	
-	public LinkShapeDialog(CanvasMap canvasMap) {
+	public LinkDialog(CanvasPanel canvasPanel) {
 		this.linkShapeDialog = this;
-		this.canvasMap = canvasMap;
+		this.canvasPanel = canvasPanel;
 		
 		nonModalDialog.setAutoHideEnabled(false);
 		nonModalDialog.setPreviewingAllNativeEvents(false);
 		nonModalDialog.setWidget(flexTable);
 		nonModalDialog.setText("Link Shape");
 		
+		nonModalDialog.addClickHandler(new NonModalClickhandler());
+		
 		DOM.setStyleAttribute(nonModalDialog.getElement(), "backgroundColor", "white");
 		
 	}
 
 	public void show() {
+		Timer t = new Timer() {
+			public void run() {
+				SC.setSelectedDialog(nonModalDialog);
+			}
+		};
+		t.schedule(50);
+		
 		nonModalDialog.show();
 
 	}
@@ -56,9 +69,9 @@ public class LinkShapeDialog {
 		currLabel = linkShapeLabel;
 		if(currLabel!=null) {
 			currLabel.highlight();
-			canvasMap.setCurrShape(currLabel.getLinkShape());
+			canvasPanel.setCurrShape(currLabel.getLinkShape());
 		} else {
-			canvasMap.setCurrShape(null);
+			canvasPanel.setCurrShape(null);
 		}
 		
 		
