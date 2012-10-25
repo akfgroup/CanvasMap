@@ -1,85 +1,77 @@
 package com.dve.client.link;
 
-import gwt.awt.Point;
 import gwt.awt.Polygon;
 
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.logging.Logger;
 
-import com.dve.client.canvas.CanvasPanel;
+import com.dve.client.canvas.CanvasScreen;
+import com.dve.client.selector.SCL;
+import com.dve.shared.dto.canvas.DTOLink;
+import com.dve.shared.dto.canvas.DTOLinks;
 
 
 public class LinkShape {
 
-	CanvasPanel canvasPanel;
+	CanvasScreen canvasScreen;
 	
 	String color = "black";
 	int weight = 5;
 
 	int nodeRadius = 5;
 
-	int startX;
-	int startY;
+	DTOLinks dtoLinks;
 
-	Vector<Point> nodes = new Vector<Point>();
-
-	Point nodeDn;
+	DTOLink dtoLink;
 
 	boolean moving;
-	double zoom;
 
 	Logger log = Logger.getLogger(LinkShape.class.getName());
 
-	public LinkShape(CanvasPanel canvasPanel, int x, int y) {
-		this.canvasPanel = canvasPanel;
-		this.startX = x;
-		this.startY = y;
-		this.zoom = canvasPanel.zoom;
+	public LinkShape(CanvasScreen canvasScreen) {
+		this.canvasScreen = canvasScreen;
 
-		Point p1 = new Point(canvasPanel.roundIt(x),canvasPanel.roundIt(y));
-		Point p2 = new Point(p1.x+(int)(canvasPanel.spacing/(1/zoom)), p1.y);
-		Point p3 = new Point(p1.x+(int)(canvasPanel.spacing/(1/zoom)), p1.y+(int)(canvasPanel.spacing/(1/zoom)));
-		Point p4 = new Point(p1.x, p1.y+(int)(canvasPanel.spacing/(1/zoom)));
-
-		nodes.add(p1);
-		nodes.add(p2);
-		nodes.add(p3);
-		nodes.add(p4);
-
-		draw();
 	}
 
 	public void nodeDown(int x, int y) {
 		log.info("nodeDn");
-		nodeDn = null;
+		if(dtoLinks==null) {
+			dtoLinks = new DTOLinks();
+			SCL.getCurrSecCanvas().getDtoCanvas().setDtoLinks(dtoLinks);
+		}
+		dtoLink = null;
 		moving = false;
 		
-		Iterator<Point> it = nodes.iterator();
+		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
-			Point p = it.next();
-			if((Math.abs(x-getCoord(p.x))^2) + (Math.abs(y-getCoord(p.y))^2) < (nodeRadius^2)) {
-				nodeDn = p;
+			DTOLink p = it.next();
+			if((Math.abs(x-getCoord(p.getX()))^2) + (Math.abs(y-getCoord(p.getY()))^2) < (nodeRadius^2)) {
+				dtoLink = p;
 				return;
 			}
 		}
 
 		clear();
-		Point p = new Point(canvasPanel.roundIt((int)((double)x*zoom/canvasPanel.zoom)),canvasPanel.roundIt((int)((double)y*zoom/canvasPanel.zoom)));
-		nodes.add(p);
+		
+		DTOLink p = new DTOLink();
+		p.setCanvasMapId(SCL.getCurrSecCanvas().getDtoCanvas().getId());
+		p.setX(canvasScreen.roundIt((int)((double)x/canvasScreen.zoom)));
+		p.setY(canvasScreen.roundIt((int)((double)y/canvasScreen.zoom)));
+		
+		dtoLinks.getDTOLinks().add(p);
 		draw();
 
 	}
 
 	public void nodeMove(int x, int y) {
 		log.info("nodeMve");
-		if(nodeDn!=null) {
-			if((Math.abs(x-getCoord(nodeDn.x))^2) + (Math.abs(y-getCoord(nodeDn.y))^2) > (nodeRadius^2)) {
+		if(dtoLink!=null) {
+			if((Math.abs(x-getCoord(dtoLink.getX()))^2) + (Math.abs(y-getCoord(dtoLink.getY()))^2) > (nodeRadius^2)) {
 				moving = true;
 				clear();
-				nodeDn.x=(int)((double)x*zoom/canvasPanel.zoom);
-				nodeDn.y=(int)((double)y*zoom/canvasPanel.zoom);
-				canvasPanel.draw();
+				dtoLink.setX((int)((double)x/canvasScreen.zoom));
+				dtoLink.setY((int)((double)y/canvasScreen.zoom));
+				canvasScreen.draw();
 				draw();		
 			}
 
@@ -89,123 +81,129 @@ public class LinkShape {
 
 	public void nodeUp(int x, int y) {
 		log.info("nodeUp!");
-		if(nodeDn==null) {
+		if(dtoLink==null) {
 			log.severe("nodeDn == null");
 		}
 		if(moving) {
 			log.severe("moving!");
 		}
-		if(nodeDn!=null && !moving) {
+		if(dtoLink!=null && !moving) {
 			log.info("nodeUp 2!");
-			if((Math.abs(x-getCoord(nodeDn.x))^2) + (Math.abs(y-getCoord(nodeDn.y))^2) < (nodeRadius^2)) {		
+			if((Math.abs(x-getCoord(dtoLink.getX()))^2) + (Math.abs(y-getCoord(dtoLink.getY()))^2) < (nodeRadius^2)) {		
 				clear();
-				nodes.remove(nodeDn);
+				dtoLinks.getDTOLinks().remove(dtoLink);
 				draw();			
 			}
 		}
+		
+		SCL.getCanvasDialog().updateCurrLinkNodes();
 
 	}
 
 	private void clear() {
 
-		Point prevP = null;
-		Point currP = null;
+		DTOLink prevP = null;
+		DTOLink currP = null;
 
-		String prevGlobalCompositeOperation = canvasPanel.context1.getGlobalCompositeOperation();
-		canvasPanel.context1.setGlobalCompositeOperation("destination-out");
+		String prevGlobalCompositeOperation = canvasScreen.context1.getGlobalCompositeOperation();
+		canvasScreen.context1.setGlobalCompositeOperation("destination-out");
 		
-		Iterator<Point> it = nodes.iterator();
+		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
-			Point p = it.next();
+			DTOLink p = it.next();
 			prevP = currP;
 
 			
-			canvasPanel.context1.setFillStyle("rgba(255,255,255,1.0)");
-			canvasPanel.context1.beginPath();
-			canvasPanel.context1.arc(getCoord(p.x), getCoord(p.y), nodeRadius+1, 0, Math.PI * 2.0, true);
-			canvasPanel.context1.closePath();
-			canvasPanel.context1.fill();
+			canvasScreen.context1.setFillStyle("rgba(255,255,255,1.0)");
+			canvasScreen.context1.beginPath();
+			canvasScreen.context1.arc(getCoord(p.getX()), getCoord(p.getY()), nodeRadius+1, 0, Math.PI * 2.0, true);
+			canvasScreen.context1.closePath();
+			canvasScreen.context1.fill();
 
 			if(prevP!=null) {
-				canvasPanel.context1.setLineWidth(5);
-				canvasPanel.context1.setStrokeStyle("rgba(255,255,255,1.0)");
-				canvasPanel.context1.beginPath();
-				canvasPanel.context1.moveTo(getCoord(prevP.x),getCoord(prevP.y));
-				canvasPanel.context1.lineTo(getCoord(p.x), getCoord(p.y));
-				canvasPanel.context1.stroke();
+				canvasScreen.context1.setLineWidth(5);
+				canvasScreen.context1.setStrokeStyle("rgba(255,255,255,1.0)");
+				canvasScreen.context1.beginPath();
+				canvasScreen.context1.moveTo(getCoord(prevP.getX()),getCoord(prevP.getY()));
+				canvasScreen.context1.lineTo(getCoord(p.getX()), getCoord(p.getY()));
+				canvasScreen.context1.stroke();
 			}
 
 			currP = p;
 
 		}
 
-		if(nodes.size()>0) {
-			Point firstP = nodes.firstElement();
-			canvasPanel.context1.setLineWidth(5);
-			canvasPanel.context1.setStrokeStyle("rgba(255,255,255,1.0)");
-			canvasPanel.context1.beginPath();
-			canvasPanel.context1.moveTo(getCoord(currP.x),getCoord(currP.y));
-			canvasPanel.context1.lineTo(getCoord(firstP.x), getCoord(firstP.y));
-			canvasPanel.context1.stroke();
+		if(dtoLinks.getDTOLinks().size()>0) {
+			DTOLink firstP = dtoLinks.getDTOLinks().firstElement();
+			canvasScreen.context1.setLineWidth(5);
+			canvasScreen.context1.setStrokeStyle("rgba(255,255,255,1.0)");
+			canvasScreen.context1.beginPath();
+			canvasScreen.context1.moveTo(getCoord(currP.getX()),getCoord(currP.getY()));
+			canvasScreen.context1.lineTo(getCoord(firstP.getX()), getCoord(firstP.getY()));
+			canvasScreen.context1.stroke();
 		}
 
-		canvasPanel.context1.setGlobalCompositeOperation(prevGlobalCompositeOperation);
+		canvasScreen.context1.setGlobalCompositeOperation(prevGlobalCompositeOperation);
 	}
 
 	public void draw() {
 
-		Point prevP = null;
-		Point currP = null;
+		DTOLink prevP = null;
+		DTOLink currP = null;
 
-		Iterator<Point> it = nodes.iterator();
+		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
-			Point p = it.next();
+			DTOLink p = it.next();
 			prevP = currP;
 
-			canvasPanel.context1.setFillStyle(color);
-			canvasPanel.context1.beginPath();
-			canvasPanel.context1.arc(getCoord(p.x), getCoord(p.y), nodeRadius, 0, Math.PI * 2.0, true);
-			canvasPanel.context1.closePath();
-			canvasPanel.context1.fill();
+			canvasScreen.context1.setFillStyle(color);
+			canvasScreen.context1.beginPath();
+			canvasScreen.context1.arc(getCoord(p.getX()), getCoord(p.getY()), nodeRadius, 0, Math.PI * 2.0, true);
+			canvasScreen.context1.closePath();
+			canvasScreen.context1.fill();
 
 			if(prevP!=null) {
-				canvasPanel.context1.setLineWidth(2);
-				canvasPanel.context1.setStrokeStyle(color);
-				canvasPanel.context1.beginPath();
-				canvasPanel.context1.moveTo(getCoord(prevP.x),getCoord(prevP.y));
-				canvasPanel.context1.lineTo(getCoord(p.x), getCoord(p.y));
-				canvasPanel.context1.stroke();
+				canvasScreen.context1.setLineWidth(2);
+				canvasScreen.context1.setStrokeStyle(color);
+				canvasScreen.context1.beginPath();
+				canvasScreen.context1.moveTo(getCoord(prevP.getX()),getCoord(prevP.getY()));
+				canvasScreen.context1.lineTo(getCoord(p.getX()), getCoord(p.getY()));
+				canvasScreen.context1.stroke();
 			}
 
 			currP = p;
 
 		}
 
-		if(nodes.size()>0) {
-			Point firstP = nodes.firstElement();
-			canvasPanel.context1.setLineWidth(2);
-			canvasPanel.context1.setStrokeStyle(color);
-			canvasPanel.context1.beginPath();
-			canvasPanel.context1.moveTo(getCoord(currP.x),getCoord(currP.y));
-			canvasPanel.context1.lineTo(getCoord(firstP.x), getCoord(firstP.y));
-			canvasPanel.context1.stroke();
+		if(dtoLinks.getDTOLinks().size()>0) {
+			DTOLink firstP = dtoLinks.getDTOLinks().firstElement();
+			canvasScreen.context1.setLineWidth(2);
+			canvasScreen.context1.setStrokeStyle(color);
+			canvasScreen.context1.beginPath();
+			canvasScreen.context1.moveTo(getCoord(currP.getX()),getCoord(currP.getY()));
+			canvasScreen.context1.lineTo(getCoord(firstP.getX()), getCoord(firstP.getY()));
+			canvasScreen.context1.stroke();
+		}
+		
+		if(!moving && SCL.getCurrSecCanvas()!=null) {
+			SCL.getCanvasDialog().updateCurrLinkNodes();
 		}
 
 	}
 	
 	private int getCoord(int coord) {
 		double x = (double)coord;
-		return (int)(x/zoom*canvasPanel.zoom);
+		return (int)(x/canvasScreen.zoom);
 		
 	}
 
 	public boolean contains(double x, double y) {
 		Polygon polygon = new Polygon();
 
-		Iterator<Point> it = nodes.iterator();
+		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
-			Point p = it.next();
-			polygon.addPoint((int)((double)p.x/zoom*canvasPanel.zoom), (int)((double)p.y/zoom*canvasPanel.zoom));
+			DTOLink p = it.next();
+			polygon.addPoint((int)((double)p.getX()/canvasScreen.zoom), (int)((double)p.getY()/canvasScreen.zoom));
 		}
 
 		return polygon.contains(x, y);
@@ -226,6 +224,10 @@ public class LinkShape {
 		
 	}
 
+	public void setDtoLinkNodes(DTOLinks dtoLinks) {
+		this.dtoLinks = dtoLinks;
+		
+	}
 
 
 }

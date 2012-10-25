@@ -2,7 +2,8 @@ package com.dve.client;
 
 import java.util.logging.Logger;
 
-import com.dve.client.canvas.CanvasPanel;
+import com.dve.client.canvas.CanvasScreen;
+import com.dve.client.canvas.dialog.CanvasDialog;
 import com.dve.client.image.ImageDialog;
 import com.dve.client.link.LinkDialog;
 import com.dve.client.selector.SCL;
@@ -25,16 +26,17 @@ public class CanvasMap implements EntryPoint {
 	
 	CanvasMap canvasMap;
 	
-	CanvasPanel canvasPanel = new CanvasPanel();
-	LinkDialog linkDialog = new LinkDialog(canvasPanel);
-	ImageDialog imageDialog = new ImageDialog();
+	CanvasScreen canvasScreen = new CanvasScreen();
+	CanvasDialog canvasDialog = new CanvasDialog();
+//	LinkDialog linkDialog = new LinkDialog(canvasPanel);
+//	ImageDialog imageDialog = new ImageDialog();
 	
 	HorizontalPanel btnPanel = new HorizontalPanel();
 	
-	Button clearBtn = new Button("Clear");
-	Button addBtn = new Button("Add Link");
+//	Button clearBtn = new Button("Clear");
+//	Button addBtn = new Button("Add Link");
 	Button modeBtn = new Button("Edit Mode");
-	Button testBtn = new Button("Test");
+//	Button testBtn = new Button("Test");
 	
 	Logger log = Logger.getLogger(CanvasMap.class.getName());
 	
@@ -59,76 +61,78 @@ public class CanvasMap implements EntryPoint {
 	private void startUp() {
 		canvasMap = this;
 		
-		SCL.setLinkDialog(linkDialog);
-		SCL.setImageDialog(imageDialog);
-		SCL.setCanvasPanel(canvasPanel);
+		SCL.setCanvasDialog(canvasDialog);
+//		SCL.setLinkDialog(linkDialog);
+//		SCL.setImageDialog(imageDialog);
+		SCL.setCanvasScreen(canvasScreen);
 		
-		clearBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				canvasPanel.clear();
-				
-			}
-
-		});
-		
-		addBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				canvasPanel.addLink();
-				
-			}
-		});
-		
+//		clearBtn.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				canvasPanel.clear();
+//				
+//			}
+//
+//		});
+//		
+//		addBtn.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+////				canvasPanel.addLink();
+//				
+//			}
+//		});
+//		
 		modeBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(canvasPanel.editMode) {
-					canvasPanel.editMode = false;
+				if(SCL.getCanvasScreen().editMode) {
+					SCL.getCanvasScreen().editMode = false;
 					modeBtn.setText("User Mode");
 					return;
 				} 
-				if(!canvasPanel.editMode) {
-					canvasPanel.editMode = true;
+				if(!SCL.getCanvasScreen().editMode) {
+					SCL.getCanvasScreen().editMode = true;
 					modeBtn.setText("Edit Mode");
 					return;
 				}
 				
 			}
 		});
-		
-		testBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				MyServiceAsync myService = (MyServiceAsync) GWT.create(MyService.class);
-				ServiceDefTarget endpoint = (ServiceDefTarget) myService;
-				String moduleRelativeURL = GWT.getModuleBaseURL() + "db";
-				endpoint.setServiceEntryPoint(moduleRelativeURL);
-
-				AsyncCallback callback = new AsyncCallback() {
-
-					public void onFailure(Throwable caught) {
-						log.severe(caught.getMessage());
-						caught.printStackTrace();
-
-					}
-
-					public void onSuccess(Object result) {
-						Window.alert((String)result);
-					
-					}
-				};
-
-				myService.checkAppVersion(callback);
-			}
-		});
-		
-		btnPanel.add(clearBtn);
-		btnPanel.add(addBtn);
+//		
+//		testBtn.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				MyServiceAsync myService = (MyServiceAsync) GWT.create(MyService.class);
+//				ServiceDefTarget endpoint = (ServiceDefTarget) myService;
+//				String moduleRelativeURL = GWT.getModuleBaseURL() + "db";
+//				endpoint.setServiceEntryPoint(moduleRelativeURL);
+//
+//				AsyncCallback callback = new AsyncCallback() {
+//
+//					public void onFailure(Throwable caught) {
+//						log.severe(caught.getMessage());
+//						caught.printStackTrace();
+//
+//					}
+//
+//					public void onSuccess(Object result) {
+//						Window.alert((String)result);
+//					
+//					}
+//				};
+//
+//				myService.checkAppVersion(callback);
+//			}
+//		});
+//		
+//		btnPanel.add(clearBtn);
+//		btnPanel.add(addBtn);
 		btnPanel.add(modeBtn);
-		btnPanel.add(testBtn);
+//		btnPanel.add(testBtn);
 		
-		RootPanel.get().add(canvasPanel);
+		RootPanel.get().add(canvasScreen);
 		RootPanel.get().add(btnPanel);
 		
-		SCL.getLinkDialog().show();
-		SCL.getImageDialog().center();
+		SCL.getCanvasDialog().center();
+//		SCL.getLinkDialog().show();
+//		SCL.getImageDialog().center();
 		
 	}
 	

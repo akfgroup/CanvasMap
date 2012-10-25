@@ -1,6 +1,6 @@
 package com.dve.client.link;
 
-import com.dve.client.canvas.CanvasPanel;
+import com.dve.client.canvas.CanvasScreen;
 import com.dve.client.dialogs.nonmodal.NonModalClickhandler;
 import com.dve.client.dialogs.nonmodal.NonModalDialog;
 import com.dve.client.selector.SC;
@@ -19,9 +19,9 @@ public class LinkDialog {
 	LinkShapeLabel prevLabel;
 	
 	LinkDialog linkShapeDialog;
-	public CanvasPanel canvasPanel;
+	public CanvasScreen canvasPanel;
 	
-	public LinkDialog(CanvasPanel canvasPanel) {
+	public LinkDialog(CanvasScreen canvasPanel) {
 		this.linkShapeDialog = this;
 		this.canvasPanel = canvasPanel;
 		
@@ -65,12 +65,12 @@ public class LinkDialog {
 			prevLabel.unhighlight();
 		}
 		currLabel = linkShapeLabel;
-		if(currLabel!=null) {
-			currLabel.highlight();
-			canvasPanel.setCurrShape(currLabel.getLinkShape());
-		} else {
-			canvasPanel.setCurrShape(null);
-		}
+//		if(currLabel!=null) {
+//			currLabel.highlight();
+//			canvasPanel.setCurrShape(currLabel.getLinkShape());
+//		} else {
+//			canvasPanel.setCurrShape(null);
+//		}
 		
 		
 	}
