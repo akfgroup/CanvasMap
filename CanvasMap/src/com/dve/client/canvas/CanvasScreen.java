@@ -40,7 +40,7 @@ public class CanvasScreen extends Composite {
 	
 	ScrollPanel scrollPanel = new ScrollPanel();
 	
-	Image image = new Image("flrpln.png");
+	Image image = new Image();
 	
 	Canvas canvas0;
 	Canvas canvas1;
@@ -74,6 +74,15 @@ public class CanvasScreen extends Composite {
 		canvas0.getElement().getStyle().setBorderWidth(2, Unit.PX);
 		canvas0.getElement().getStyle().setBorderColor("black");
 		
+		canvas1.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(!editMode) {
+					int x = event.getRelativeX(canvas0.getCanvasElement());
+					int y = event.getRelativeY(canvas0.getCanvasElement());
+				}
+			}
+		});
+		
 		canvas1.addMouseOverHandler(new MouseOverHandler() {
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
@@ -103,10 +112,7 @@ public class CanvasScreen extends Composite {
 						SCL.getCurrSecCanvas().getLinkShape().nodeDown(x,y);
 					}
 
-				} else if(!editMode) {
-					
-					
-				}
+				} 
 			}
 		});
 		
@@ -239,7 +245,7 @@ public class CanvasScreen extends Composite {
 		    }
 		});
 		
-		scrollPanel.setPixelSize(Window.getClientWidth(), Window.getClientHeight()-50);
+		scrollPanel.setPixelSize(Window.getClientWidth(), Window.getClientHeight());
 		scrollPanel.setWidget(absolutePanel);
 		
 		initWidget(scrollPanel);

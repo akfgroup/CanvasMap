@@ -35,7 +35,6 @@ public class CanvasMap implements EntryPoint {
 	
 //	Button clearBtn = new Button("Clear");
 //	Button addBtn = new Button("Add Link");
-	Button modeBtn = new Button("Edit Mode");
 //	Button testBtn = new Button("Test");
 	
 	Logger log = Logger.getLogger(CanvasMap.class.getName());
@@ -81,21 +80,6 @@ public class CanvasMap implements EntryPoint {
 //			}
 //		});
 //		
-		modeBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				if(SCL.getCanvasScreen().editMode) {
-					SCL.getCanvasScreen().editMode = false;
-					modeBtn.setText("User Mode");
-					return;
-				} 
-				if(!SCL.getCanvasScreen().editMode) {
-					SCL.getCanvasScreen().editMode = true;
-					modeBtn.setText("Edit Mode");
-					return;
-				}
-				
-			}
-		});
 //		
 //		testBtn.addClickHandler(new ClickHandler() {
 //			public void onClick(ClickEvent event) {
@@ -124,7 +108,6 @@ public class CanvasMap implements EntryPoint {
 //		
 //		btnPanel.add(clearBtn);
 //		btnPanel.add(addBtn);
-		btnPanel.add(modeBtn);
 //		btnPanel.add(testBtn);
 		
 		RootPanel.get().add(canvasScreen);

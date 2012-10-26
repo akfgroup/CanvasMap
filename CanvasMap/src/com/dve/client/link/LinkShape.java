@@ -55,8 +55,9 @@ public class LinkShape {
 		
 		DTOLink p = new DTOLink();
 		p.setCanvasMapId(SCL.getCurrSecCanvas().getDtoCanvas().getId());
-		p.setX(canvasScreen.roundIt((int)((double)x/canvasScreen.zoom)));
-		p.setY(canvasScreen.roundIt((int)((double)y/canvasScreen.zoom)));
+		p.setX(x);
+		p.setY(y);
+		p.setZoom(SCL.getCanvasScreen().zoom);
 		
 		dtoLinks.getDTOLinks().add(p);
 		draw();
@@ -69,8 +70,8 @@ public class LinkShape {
 			if((Math.abs(x-getCoord(dtoLink.getX()))^2) + (Math.abs(y-getCoord(dtoLink.getY()))^2) > (nodeRadius^2)) {
 				moving = true;
 				clear();
-				dtoLink.setX((int)((double)x/canvasScreen.zoom));
-				dtoLink.setY((int)((double)y/canvasScreen.zoom));
+				dtoLink.setX(x);
+				dtoLink.setY(y);
 				canvasScreen.draw();
 				draw();		
 			}
@@ -193,7 +194,7 @@ public class LinkShape {
 	
 	private int getCoord(int coord) {
 		double x = (double)coord;
-		return (int)(x/canvasScreen.zoom);
+		return (int)(x*canvasScreen.zoom);
 		
 	}
 
