@@ -131,23 +131,16 @@ public class CanvasPanel extends Composite {
 
 			public void onSuccess(Object result) {
 				log.info("here");
-				SCL.setDtoCanvases((DTOCanvases) result);
+				CanvasLabel rootLabel = new CanvasLabel(null);
+				SCL.setRootLabel(rootLabel);
 				
-				canvasTable.removeAllRows();
-				if(SCL.getDtoCanvases()!=null) {
-					Iterator<DTOCanvas> it = SCL.getDtoCanvases().getDTOCanvases().iterator();
-					while(it.hasNext()) {
-						log.info("adding");
-						DTOCanvas dtoCanvas = it.next();
-						CanvasLabel canvasLabel = new CanvasLabel(dtoCanvas);
-						canvasTable.setWidget(canvasTable.getRowCount(), 0, canvasLabel);
-					}
-					SCL.getCanvasDialog().nonModalDialog.setText("Canvas - Roots");
-				}
 				SCL.setCurrPrimeCanvas(null);
 				SCL.setCurrSecCanvas(null);
-				SCL.getCanvasScreen().updateImage();
-
+				
+				rootLabel.setDtoCanvases((DTOCanvases) result);
+				
+				SCL.getCanvasDialog().nonModalDialog.setText("Canvas - Roots");
+			
 			}
 		};
 

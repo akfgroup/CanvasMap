@@ -1,7 +1,5 @@
 package com.dve.client.link;
 
-import gwt.awt.Polygon;
-
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -34,7 +32,7 @@ public class LinkShape {
 	}
 
 	public void nodeDown(int x, int y) {
-		log.info("nodeDn");
+		log.info("nodeDn x=" + x + ", y=" + y);
 		if(dtoLinks==null) {
 			dtoLinks = new DTOLinks();
 			SCL.getCurrSecCanvas().getDtoCanvas().setDtoLinks(dtoLinks);
@@ -55,9 +53,8 @@ public class LinkShape {
 		
 		DTOLink p = new DTOLink();
 		p.setCanvasMapId(SCL.getCurrSecCanvas().getDtoCanvas().getId());
-		p.setX(x);
-		p.setY(y);
-		p.setZoom(SCL.getCanvasScreen().zoom);
+		p.setX(getRevCoord(x));
+		p.setY(getRevCoord(y));
 		
 		dtoLinks.getDTOLinks().add(p);
 		draw();
@@ -67,11 +64,11 @@ public class LinkShape {
 	public void nodeMove(int x, int y) {
 		log.info("nodeMve");
 		if(dtoLink!=null) {
-			if((Math.abs(x-getCoord(dtoLink.getX()))^2) + (Math.abs(y-getCoord(dtoLink.getY()))^2) > (nodeRadius^2)) {
+			if(Math.pow(x-getCoord(dtoLink.getX()),2) + Math.pow(y-getCoord(dtoLink.getY()),2) > Math.pow(nodeRadius,2)) {
 				moving = true;
 				clear();
-				dtoLink.setX(x);
-				dtoLink.setY(y);
+				dtoLink.setX(getRevCoord(x));
+				dtoLink.setY(getRevCoord(y));
 				canvasScreen.draw();
 				draw();		
 			}
@@ -89,8 +86,14 @@ public class LinkShape {
 			log.severe("moving!");
 		}
 		if(dtoLink!=null && !moving) {
-			log.info("nodeUp 2!");
-			if((Math.abs(x-getCoord(dtoLink.getX()))^2) + (Math.abs(y-getCoord(dtoLink.getY()))^2) < (nodeRadius^2)) {		
+			log.info("x,y = " + x + ", " + y);
+			log.info("x = " + x);
+			log.info("dtoLink.x = " + getCoord(dtoLink.getX()));
+			log.info("y = " + getRevCoord(y));
+			log.info("dtoLink.y = " + getCoord(dtoLink.getY()));
+			log.info("nodeUp 2! value = " + (Math.pow(x-getCoord(dtoLink.getX()),2) + Math.pow(y-getCoord(dtoLink.getY()),2)) + ", nodeRadius = " + nodeRadius + " nodeRadius^2 = " + (Math.pow(nodeRadius,2)));
+			if(Math.pow(x-getCoord(dtoLink.getX()),2) + Math.pow(y-getCoord(dtoLink.getY()),2) <= Math.pow(nodeRadius,2)) {
+				log.info("nodeUp 2-a!");
 				clear();
 				dtoLinks.getDTOLinks().remove(dtoLink);
 				draw();			
@@ -114,7 +117,6 @@ public class LinkShape {
 			DTOLink p = it.next();
 			prevP = currP;
 
-			
 			canvasScreen.context1.setFillStyle("rgba(255,255,255,1.0)");
 			canvasScreen.context1.beginPath();
 			canvasScreen.context1.arc(getCoord(p.getX()), getCoord(p.getY()), nodeRadius+1, 0, Math.PI * 2.0, true);
@@ -197,18 +199,10 @@ public class LinkShape {
 		return (int)(x*canvasScreen.zoom);
 		
 	}
-
-	public boolean contains(double x, double y) {
-		Polygon polygon = new Polygon();
-
-		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
-		while(it.hasNext()) {
-			DTOLink p = it.next();
-			polygon.addPoint((int)((double)p.getX()/canvasScreen.zoom), (int)((double)p.getY()/canvasScreen.zoom));
-		}
-
-		return polygon.contains(x, y);
-
+	
+	private int getRevCoord(int coord) {
+		double x = (double)coord;
+		return (int)(x/canvasScreen.zoom);
 	}
 	
 	public void highlight() {

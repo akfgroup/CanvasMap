@@ -14,7 +14,7 @@ public class SCL {
 	private static CanvasDialog canvasDialog;
 	private static CanvasScreen canvasScreen;
 	
-	private static DTOCanvases dtoCanvases;
+	private static CanvasLabel rootLabel;
 	
 	private static CanvasLabel currPrimeCanvas;
 	private static CanvasLabel prevPrimeCanvas;
@@ -40,11 +40,11 @@ public class SCL {
 	public static void setCanvasScreen(CanvasScreen canvasScreen) {
 		SCL.canvasScreen = canvasScreen;
 	}
-	public static DTOCanvases getDtoCanvases() {
-		return dtoCanvases;
+	public static CanvasLabel getRootLabel() {
+		return rootLabel;
 	}
-	public static void setDtoCanvases(DTOCanvases dtoCanvases) {
-		SCL.dtoCanvases = dtoCanvases;
+	public static void setRootLabel(CanvasLabel rootLabel) {
+		SCL.rootLabel = rootLabel;
 	}
 	public static CanvasLabel getCurrPrimeCanvas() {
 		return currPrimeCanvas;

@@ -62,6 +62,7 @@ public class CanvasDialog {
 	
 	PushButton backBtn = new PushButton(new Image(EquipUtilities.getIr().undo()));
 	Button modeBtn = new Button("Edit Mode");
+	Label zoomLA = new Label("Zoom = ");
 	
 	DTOProjects dtoProjects;
 	DTOProject dtoProject;
@@ -76,6 +77,7 @@ public class CanvasDialog {
 		
 		topPanel.add(backBtn);
 		topPanel.add(modeBtn);
+		topPanel.add(zoomLA);
 		
 		mainPanel.setBorderWidth(1);
 		mainPanel.add(topPanel);
@@ -228,6 +230,7 @@ public class CanvasDialog {
 		SCL.setCurrPrimeCanvas(canvasLabel);
 		if(SCL.getCurrPrimeCanvas()!=null) {
 			Vector canvasLabels = new Vector();
+			SCL.getCurrPrimeCanvas().setCanvasLabels(canvasLabels);
 			canvasLabels.add(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 
 			DTOCanvas tempCanvas = SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas();;
@@ -260,27 +263,45 @@ public class CanvasDialog {
 			}
 
 			public void onSuccess(Object result) {
-				SCL.setDtoCanvases((DTOCanvases) result);
+				DTOCanvases dtoCanvases = (DTOCanvases) result;
 				
-				canvasPanel.getCanvasTable().removeAllRows();
-				if(SCL.getDtoCanvases()!=null) {
-					Iterator<DTOCanvas> it = SCL.getDtoCanvases().getDTOCanvases().iterator();
-					while(it.hasNext()) {
-						log.info("adding");
-						DTOCanvas dtoCanvas = it.next();
-						CanvasLabel canvasLabel = new CanvasLabel(dtoCanvas);
-						canvasPanel.getCanvasTable().setWidget(canvasPanel.getCanvasTable().getRowCount(), 0, canvasLabel);
-					}
-				}
-				SCL.getCanvasScreen().updateImage();
+				SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
+				
 			}
 		};
 		ServiceUtilities.getEquipService().getCanvasesByCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
 		
 	}
 	
+	public void updateRootCanvas() {
+		canvasPanel.getCanvasTable().removeAllRows();
+		Iterator<CanvasLabel> it = SCL.getRootLabel().getCanvasLabels().iterator();
+		while(it.hasNext()) {
+			CanvasLabel canvasLabel = it.next();
+			canvasPanel.getCanvasTable().setWidget(canvasPanel.getCanvasTable().getRowCount(), 0, canvasLabel);
+		}
+		SCL.getCanvasScreen().updateImage();
+		
+	}
+	
+	public void updatePrimeCanvas() {
+		canvasPanel.getCanvasTable().removeAllRows();
+		Iterator<CanvasLabel> it = SCL.getCurrPrimeCanvas().getCanvasLabels().iterator();
+		while(it.hasNext()) {
+			CanvasLabel canvasLabel = it.next();
+			canvasPanel.getCanvasTable().setWidget(canvasPanel.getCanvasTable().getRowCount(), 0, canvasLabel);
+		}
+		SCL.getCanvasScreen().updateImage();
+		
+	}
+	
 	public LinkPanel getLinkPanel() {
 		return linkPanel;
+		
+	}
+	
+	public Label getZoomLA() {
+		return zoomLA;
 		
 	}
 
@@ -336,6 +357,10 @@ public class CanvasDialog {
 		ServiceUtilities.getEquipService().updateLinkNodes(SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks(), callback);
 		
 	}
+
+	
+
+	
 	
 
 }

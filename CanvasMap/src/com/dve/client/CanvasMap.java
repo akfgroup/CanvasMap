@@ -111,7 +111,6 @@ public class CanvasMap implements EntryPoint {
 //		btnPanel.add(testBtn);
 		
 		RootPanel.get().add(canvasScreen);
-		RootPanel.get().add(btnPanel);
 		
 		SCL.getCanvasDialog().center();
 //		SCL.getLinkDialog().show();
