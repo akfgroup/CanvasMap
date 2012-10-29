@@ -103,22 +103,24 @@ public class CanvasLabel extends Composite {
 	public DTOCanvas contains(double x, double y) {
 
 		DTOCanvas tempCanvas = null;
-		//		for(int i=0; i<SCL.getDtoCanvases().getDTOCanvases().size(); i++) {
-		//			tempCanvas = SCL.getDtoCanvases().getDTOCanvases().get(i);
-		//			if(tempCanvas.getDtoLinks()!=null) {
-		//				Polygon polygon = new Polygon();
-		//				Iterator<DTOLink> it = tempCanvas.getDtoLinks().getDTOLinks().iterator();
-		//				while(it.hasNext()) {
-		//					DTOLink p = it.next();
-		//					polygon.addPoint((int)((double)p.getX()/SCL.getCanvasScreen().zoom), (int)((double)p.getY()/SCL.getCanvasScreen().zoom));
-		//				}
-		//				if(polygon.contains(x,y)) {
-		//					return tempCanvas;
-		//				}
-		//			} 
-		//			
-		//		}
-		return tempCanvas;
+		if(dtoCanvases!=null) {
+			for(int i=0; i<dtoCanvases.getDTOCanvases().size(); i++) {
+				tempCanvas = dtoCanvases.getDTOCanvases().get(i);
+				if(tempCanvas.getDtoLinks()!=null) {
+					Polygon polygon = new Polygon();
+					Iterator<DTOLink> it = tempCanvas.getDtoLinks().getDTOLinks().iterator();
+					while(it.hasNext()) {
+						DTOLink p = it.next();
+						polygon.addPoint((int)((double)p.getX()*SCL.getCanvasScreen().zoom), (int)((double)p.getY()*SCL.getCanvasScreen().zoom));
+					}
+					if(polygon.contains(x,y)) {
+						return tempCanvas;
+					}
+				} 
+
+			}
+		}
+		return null;
 
 	}
 
@@ -139,6 +141,18 @@ public class CanvasLabel extends Composite {
 			SCL.getCanvasDialog().updateRootCanvas();
 		}
 
+	}
+	
+	public void drawLinks() {
+		if(dtoCanvases!=null) {
+			Iterator<DTOCanvas> it = dtoCanvases.getDTOCanvases().iterator();
+			while(it.hasNext()) {
+				CanvasLabel canvasLabel = new CanvasLabel(it.next());
+				if(canvasLabel.getLinkShape()!=null) {
+					canvasLabel.getLinkShape().draw();
+				}
+			}
+		}
 	}
 
 }

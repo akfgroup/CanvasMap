@@ -81,7 +81,12 @@ public class CanvasScreen extends Composite {
 					int x = event.getRelativeX(canvas0.getCanvasElement());
 					int y = event.getRelativeY(canvas0.getCanvasElement());
 
-					SCL.getCurrPrimeCanvas().getLink(x,y);
+					if(SCL.getCurrPrimeCanvas()!=null) {
+						DTOCanvas dtoCanvas = SCL.getCurrPrimeCanvas().contains(x, y);
+						if(dtoCanvas!=null) {
+							SCL.getCanvasDialog().openCanvas(new CanvasLabel(dtoCanvas));
+						}
+					}
 
 				}
 			}
@@ -107,11 +112,11 @@ public class CanvasScreen extends Composite {
 				mouseDn = true;
 				mouseDnX = event.getClientX();
 				mouseDnY = event.getClientY();
+				
+				int x = event.getRelativeX(canvas0.getCanvasElement());
+				int y = event.getRelativeY(canvas0.getCanvasElement());
 
 				if(editMode) {
-					int x = event.getRelativeX(canvas0.getCanvasElement());
-					int y = event.getRelativeY(canvas0.getCanvasElement());
-
 					if(SCL.getCurrSecCanvas()!=null) {
 						LinkShape linkShape = SCL.getCurrSecCanvas().getLinkShape();
 						if(linkShape==null) {
@@ -212,8 +217,8 @@ public class CanvasScreen extends Composite {
 				scrollPanel.setHorizontalScrollPosition(nsx);
 				scrollPanel.setVerticalScrollPosition(nsy);
 
-				if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getDtoLinks()!=null) {
-					SCL.getCurrSecCanvas().getLinkShape().draw();
+				if(SCL.getCurrPrimeCanvas()!=null) {
+					SCL.getCurrPrimeCanvas().drawLinks();
 				}
 
 				SCL.getCanvasDialog().getZoomLA().setText("Zoom = " + zoom);
@@ -242,6 +247,7 @@ public class CanvasScreen extends Composite {
 					canvas1.setCoordinateSpaceWidth(width);
 
 					context0.drawImage(ImageElement.as(image.getElement()),0,0, width, height);
+					
 
 				}
 
@@ -307,13 +313,7 @@ public class CanvasScreen extends Composite {
 
 						context0.drawImage(ImageElement.as(image.getElement()),0,0, width, height);
 
-						Iterator<CanvasLabel> it = SCL.getCurrPrimeCanvas().getCanvasLabels().iterator();
-						while(it.hasNext()) {
-							CanvasLabel canvasLabel = it.next();
-							if(canvasLabel.getLinkShape()!=null) {
-								canvasLabel.getLinkShape().draw();
-							}
-						}
+						SCL.getCurrPrimeCanvas().drawLinks();
 
 						SCL.getWaiting().close();
 					}

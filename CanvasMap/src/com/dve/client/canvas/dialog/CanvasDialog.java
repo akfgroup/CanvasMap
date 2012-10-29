@@ -188,7 +188,6 @@ public class CanvasDialog {
 					
 					SCL.getCurrPrimeCanvas().getDtoCanvas().setImageId(Integer.parseInt(id));
 					SCL.getCurrPrimeCanvas().getDtoCanvas().setImageType(type);
-
 					SCL.getCanvasScreen().updateImage();
 
 				} else {
@@ -251,7 +250,9 @@ public class CanvasDialog {
 			
 			nonModalDialog.setText(label);
 			SCL.getCurrPrimeCanvas().highlight();
+			SCL.getCanvasScreen().updateImage();
 			
+				
 		}
 	
 		singleUploader.setServletPath(".gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
@@ -266,6 +267,8 @@ public class CanvasDialog {
 				DTOCanvases dtoCanvases = (DTOCanvases) result;
 				
 				SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
+				SCL.getCanvasScreen().updateImage();
+				SCL.getCurrPrimeCanvas().drawLinks();
 				
 			}
 		};
@@ -291,7 +294,6 @@ public class CanvasDialog {
 			CanvasLabel canvasLabel = it.next();
 			canvasPanel.getCanvasTable().setWidget(canvasPanel.getCanvasTable().getRowCount(), 0, canvasLabel);
 		}
-		SCL.getCanvasScreen().updateImage();
 		
 	}
 	
