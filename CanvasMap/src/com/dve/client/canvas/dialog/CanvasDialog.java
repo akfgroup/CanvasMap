@@ -250,29 +250,29 @@ public class CanvasDialog {
 			
 			nonModalDialog.setText(label);
 			SCL.getCurrPrimeCanvas().highlight();
-			SCL.getCanvasScreen().updateImage();
+			
+			AsyncCallback callback = new AsyncCallback() {
+				public void onFailure(Throwable caught) {
+					log.severe(caught.getMessage());
+
+				}
+
+				public void onSuccess(Object result) {
+					DTOCanvases dtoCanvases = (DTOCanvases) result;
+					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
+					
+					SCL.getCanvasScreen().updateImage();
+					
+				}
+			};
+			ServiceUtilities.getEquipService().getCanvasesByCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
 			
 				
 		}
 	
 		singleUploader.setServletPath(".gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 		
-		AsyncCallback callback = new AsyncCallback() {
-			public void onFailure(Throwable caught) {
-				log.severe(caught.getMessage());
-
-			}
-
-			public void onSuccess(Object result) {
-				DTOCanvases dtoCanvases = (DTOCanvases) result;
-				
-				SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
-				SCL.getCanvasScreen().updateImage();
-				SCL.getCurrPrimeCanvas().drawLinks();
-				
-			}
-		};
-		ServiceUtilities.getEquipService().getCanvasesByCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
+		
 		
 	}
 	

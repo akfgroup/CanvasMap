@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.link.LinkShape;
+import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.shared.dto.canvas.DTOCanvas;
 import com.google.gwt.canvas.client.Canvas;
@@ -26,6 +27,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -192,36 +194,7 @@ public class CanvasScreen extends Composite {
 					nsy = nsy - (int)((double)nsy*.1) - (int)(Math.abs(x-Window.getClientWidth()/2)*.1);
 				}
 
-				clear();
-
-				int twidth = (int)((double)width*zoom);
-				int theight = (int)((double)height*zoom);
-
-				log.info("Width = " + twidth);
-				log.info("Height = " + theight);
-
-				absolutePanel.setPixelSize(twidth, theight);
-
-				canvas0.setPixelSize(twidth, theight);
-				canvas0.setCoordinateSpaceHeight(theight);
-				canvas0.setCoordinateSpaceWidth(twidth);
-
-				canvas1.setPixelSize(twidth, theight);
-				canvas1.setCoordinateSpaceHeight(theight);
-				canvas1.setCoordinateSpaceWidth(twidth);
-
-				context0.drawImage(ImageElement.as(image.getElement()),0,0, twidth, theight);
-
-				draw();
-
-				scrollPanel.setHorizontalScrollPosition(nsx);
-				scrollPanel.setVerticalScrollPosition(nsy);
-
-				if(SCL.getCurrPrimeCanvas()!=null) {
-					SCL.getCurrPrimeCanvas().drawLinks();
-				}
-
-				SCL.getCanvasDialog().getZoomLA().setText("Zoom = " + zoom);
+				updateImage();
 			}
 
 		});
@@ -271,12 +244,13 @@ public class CanvasScreen extends Composite {
 	}
 
 	public void draw() {
-		Iterator<CanvasLabel> it = SCL.getCurrPrimeCanvas().getCanvasLabels().iterator();
-		while(it.hasNext()) {
-			CanvasLabel canvasLabel = it.next();
-			if(canvasLabel.getLinkShape()!=null) {
-				canvasLabel.getLinkShape().draw();
-			}
+		if(SCL.getCurrPrimeCanvas()!=null) {
+			Timer t = new Timer() {
+				public void run() {
+					SCL.getCurrPrimeCanvas().drawLinks();
+				}
+			};
+			t.schedule(10);		
 		}
 
 	}	
@@ -290,9 +264,12 @@ public class CanvasScreen extends Composite {
 		log.info("UpdateImage");
 		if(SCL.getCurrPrimeCanvas()!=null && 
 				SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId()>-1) {
-			String url = "../getImage?nimage=" + SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId() + "." + SCL.getCurrPrimeCanvas().getDtoCanvas().getImageType();
-			log.info("url = " + url);
+			String url = SC.getContextName() + "/getImage?nimage=" + SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId() + "." + SCL.getCurrPrimeCanvas().getDtoCanvas().getImageType();
+//			Window.alert("url = " + url);
+			
+			image = new Image();
 			image.setUrl(url);
+			log.info("url = " + image.getUrl());
 			SCL.getWaiting().show();
 			ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
 				public void imageLoaded(ImageLoadEvent event) {
@@ -313,9 +290,15 @@ public class CanvasScreen extends Composite {
 
 						context0.drawImage(ImageElement.as(image.getElement()),0,0, width, height);
 
-						SCL.getCurrPrimeCanvas().drawLinks();
-
-						SCL.getWaiting().close();
+						Timer t = new Timer(){
+							@Override
+							public void run() {
+								SCL.getCurrPrimeCanvas().drawLinks();
+								SCL.getWaiting().close();
+							}
+						};
+						t.schedule(10);
+						
 					}
 
 				}

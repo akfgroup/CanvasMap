@@ -4,6 +4,7 @@ import gwt.awt.Polygon;
 
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import com.dve.client.link.LinkShape;
 import com.dve.client.selector.SCL;
@@ -30,6 +31,8 @@ public class CanvasLabel extends Composite {
 	LinkShape linkShape;
 
 	Label label = new Label();
+	
+	Logger log = Logger.getLogger(CanvasLabel.class.getName());
 
 	public CanvasLabel(DTOCanvas dtoCanvas) {
 		this.dtoCanvas = dtoCanvas;

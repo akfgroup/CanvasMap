@@ -6,6 +6,7 @@ import com.dve.client.canvas.CanvasScreen;
 import com.dve.client.canvas.dialog.CanvasDialog;
 import com.dve.client.image.ImageDialog;
 import com.dve.client.link.LinkDialog;
+import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.shared.service.my.MyService;
 import com.dve.shared.service.my.MyServiceAsync;
@@ -51,6 +52,7 @@ public class CanvasMap implements EntryPoint {
 
 				}
 			});
+			SC.setContextName("/canvasmap");
 		}
 
 		startUp();

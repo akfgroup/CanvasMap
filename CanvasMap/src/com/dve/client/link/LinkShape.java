@@ -196,12 +196,14 @@ public class LinkShape {
 	
 	private int getCoord(int coord) {
 		double x = (double)coord;
+//		log.info("getCoord() zoom = " + canvasScreen.zoom);
 		return (int)(x*canvasScreen.zoom);
 		
 	}
 	
 	private int getRevCoord(int coord) {
 		double x = (double)coord;
+//		log.info("getRevCoord() zoom = " + canvasScreen.zoom);
 		return (int)(x/canvasScreen.zoom);
 	}
 	
