@@ -7,10 +7,12 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.dve.client.link.LinkShape;
+import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.shared.dto.canvas.DTOCanvas;
 import com.dve.shared.dto.canvas.DTOCanvases;
 import com.dve.shared.dto.canvas.DTOLink;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -18,7 +20,11 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
+import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
+import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 
 public class CanvasLabel extends Composite {
 
@@ -27,7 +33,13 @@ public class CanvasLabel extends Composite {
 
 	DTOCanvases dtoCanvases;
 	Vector<CanvasLabel> canvasLabels = new Vector();
+	
+	CanvasLabel parentCanvasLabel;
 
+	Image image = new Image();
+	int imgWidth = -1;
+	int imgHeight = -1;
+	
 	LinkShape linkShape;
 
 	Label label = new Label();
@@ -42,6 +54,9 @@ public class CanvasLabel extends Composite {
 			if(dtoCanvas.getDtoLinks()!=null) {
 				linkShape = new LinkShape(SCL.getCanvasScreen());
 				linkShape.setDtoLinkNodes(dtoCanvas.getDtoLinks());
+			}
+			if(dtoCanvas.getParentCanvas()!=null) {
+				parentCanvasLabel = new CanvasLabel(dtoCanvas.getParentCanvas());
 			}
 
 			label.setText(dtoCanvas.getId() + " - " + dtoCanvas.getName());
@@ -59,14 +74,31 @@ public class CanvasLabel extends Composite {
 
 				}
 			});
+			
+			image.setUrl(SC.getContextName() + "/getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
+			
+			ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
+				public void imageLoaded(ImageLoadEvent event) {
+					if (event.isLoadFailed()) {log.severe("Load Failed!");}
+					else{
+						imgWidth = (int)((double)event.getDimensions().getWidth());
+						imgHeight = (int)((double)event.getDimensions().getHeight());
+						
+					}
+				}
+			});
+			
 		}
-
 		initWidget(label);
 
 	}
 
 	public DTOCanvas getDtoCanvas() {
 		return dtoCanvas;
+	}
+	
+	public CanvasLabel getParentCanvasLabel() {
+		return parentCanvasLabel;
 	}
 
 	public LinkShape getLinkShape() {
@@ -84,6 +116,30 @@ public class CanvasLabel extends Composite {
 
 	public void setCanvasLabels(Vector<CanvasLabel> canvasLabels) {
 		this.canvasLabels = canvasLabels;
+	}
+	
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+	
+	public int getImgWidth() {
+		return imgWidth;
+	}
+
+	public void setImgWidth(int imgWidth) {
+		this.imgWidth = imgWidth;
+	}
+
+	public int getImgHeight() {
+		return imgHeight;
+	}
+
+	public void setImgHeight(int imgHeight) {
+		this.imgHeight = imgHeight;
 	}
 
 	public void highlight() {
@@ -103,7 +159,7 @@ public class CanvasLabel extends Composite {
 
 	}
 
-	public DTOCanvas contains(double x, double y) {
+	public CanvasLabel contains(double x, double y) {
 
 		DTOCanvas tempCanvas = null;
 		if(dtoCanvases!=null) {
@@ -117,7 +173,7 @@ public class CanvasLabel extends Composite {
 						polygon.addPoint((int)((double)p.getX()*SCL.getCanvasScreen().zoom), (int)((double)p.getY()*SCL.getCanvasScreen().zoom));
 					}
 					if(polygon.contains(x,y)) {
-						return tempCanvas;
+						return canvasLabels.get(i);
 					}
 				} 
 

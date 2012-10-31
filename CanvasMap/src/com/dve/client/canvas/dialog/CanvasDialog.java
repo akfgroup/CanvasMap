@@ -123,13 +123,11 @@ public class CanvasDialog {
 
 		DOM.setStyleAttribute(nonModalDialog.getElement(), "backgroundColor", "white");
 		
-
-		
 		backBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas()!=null) {
-					SCL.getCanvasDialog().openCanvas(new CanvasLabel(SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas()));
+					SCL.getCanvasDialog().openCanvas(SCL.getCurrPrimeCanvas().getParentCanvasLabel());
 					
 				} else {
 					canvasPanel.getRootCanvases();
@@ -261,15 +259,13 @@ public class CanvasDialog {
 					DTOCanvases dtoCanvases = (DTOCanvases) result;
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
 					
-					SCL.getCanvasScreen().updateImage();
-					
 				}
 			};
 			ServiceUtilities.getEquipService().getCanvasesByCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
 			
 				
 		}
-	
+		SCL.getCanvasScreen().updateImage();
 		singleUploader.setServletPath(".gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 		
 		
