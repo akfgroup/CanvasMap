@@ -69,8 +69,8 @@ public class LinkShape {
 				clear();
 				dtoLink.setX(getRevCoord(x));
 				dtoLink.setY(getRevCoord(y));
-				canvasScreen.draw();
-				draw();		
+				draw();
+				
 			}
 
 		}
@@ -186,10 +186,6 @@ public class LinkShape {
 			canvasScreen.context1.moveTo(getCoord(currP.getX()),getCoord(currP.getY()));
 			canvasScreen.context1.lineTo(getCoord(firstP.getX()), getCoord(firstP.getY()));
 			canvasScreen.context1.stroke();
-		}
-		
-		if(!moving && SCL.getCurrSecCanvas()!=null) {
-			SCL.getCanvasDialog().updateCurrLinkNodes();
 		}
 
 	}

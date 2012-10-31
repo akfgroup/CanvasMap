@@ -4,23 +4,15 @@ import java.util.logging.Logger;
 
 import com.dve.client.canvas.CanvasScreen;
 import com.dve.client.canvas.dialog.CanvasDialog;
-import com.dve.client.image.ImageDialog;
-import com.dve.client.link.LinkDialog;
 import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
-import com.dve.shared.service.my.MyService;
-import com.dve.shared.service.my.MyServiceAsync;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 public class CanvasMap implements EntryPoint {
@@ -29,14 +21,15 @@ public class CanvasMap implements EntryPoint {
 	
 	CanvasScreen canvasScreen = new CanvasScreen();
 	CanvasDialog canvasDialog = new CanvasDialog();
-//	LinkDialog linkDialog = new LinkDialog(canvasPanel);
-//	ImageDialog imageDialog = new ImageDialog();
 	
+	VerticalPanel mainPanel = new VerticalPanel();
+	
+	TabBar tabBar = new TabBar();
+	CanvasBreadCrumb breadCrumb = new CanvasBreadCrumb();
+	
+	HorizontalPanel topPanel = new HorizontalPanel();
+	VerticalPanel centerPanel = new VerticalPanel();
 	HorizontalPanel btnPanel = new HorizontalPanel();
-	
-//	Button clearBtn = new Button("Clear");
-//	Button addBtn = new Button("Add Link");
-//	Button testBtn = new Button("Test");
 	
 	Logger log = Logger.getLogger(CanvasMap.class.getName());
 	
@@ -63,60 +56,27 @@ public class CanvasMap implements EntryPoint {
 		canvasMap = this;
 		
 		SCL.setCanvasDialog(canvasDialog);
-//		SCL.setLinkDialog(linkDialog);
-//		SCL.setImageDialog(imageDialog);
 		SCL.setCanvasScreen(canvasScreen);
+		SCL.setBreadCrumb(breadCrumb);
 		
-//		clearBtn.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				canvasPanel.clear();
-//				
-//			}
-//
-//		});
-//		
-//		addBtn.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-////				canvasPanel.addLink();
-//				
-//			}
-//		});
-//		
-//		
-//		testBtn.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				MyServiceAsync myService = (MyServiceAsync) GWT.create(MyService.class);
-//				ServiceDefTarget endpoint = (ServiceDefTarget) myService;
-//				String moduleRelativeURL = GWT.getModuleBaseURL() + "db";
-//				endpoint.setServiceEntryPoint(moduleRelativeURL);
-//
-//				AsyncCallback callback = new AsyncCallback() {
-//
-//					public void onFailure(Throwable caught) {
-//						log.severe(caught.getMessage());
-//						caught.printStackTrace();
-//
-//					}
-//
-//					public void onSuccess(Object result) {
-//						Window.alert((String)result);
-//					
-//					}
-//				};
-//
-//				myService.checkAppVersion(callback);
-//			}
-//		});
-//		
-//		btnPanel.add(clearBtn);
-//		btnPanel.add(addBtn);
-//		btnPanel.add(testBtn);
+		tabBar.addTab("Map");
+		tabBar.addTab("Resource's");
 		
-		RootPanel.get().add(canvasScreen);
+		tabBar.getElement().getStyle().setBackgroundColor("transparent");
+		tabBar.selectTab(0);
+		
+		topPanel.add(tabBar);
+		topPanel.add(breadCrumb);
+		
+		mainPanel.add(topPanel);
+		mainPanel.add(centerPanel);
+		mainPanel.add(btnPanel);
+		
+		centerPanel.add(canvasScreen);
+		
+		RootPanel.get().add(mainPanel);
 		
 		SCL.getCanvasDialog().center();
-//		SCL.getLinkDialog().show();
-//		SCL.getImageDialog().center();
 		
 	}
 	

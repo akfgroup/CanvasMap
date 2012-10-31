@@ -10,6 +10,7 @@ import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.UploadedInfo;
 
+import com.dve.client.CanvasBreadCrumb;
 import com.dve.client.canvas.CanvasPanel;
 import com.dve.client.dialogs.nonmodal.ModalDialog;
 import com.dve.client.dialogs.nonmodal.NonModalClickhandler;
@@ -186,7 +187,7 @@ public class CanvasDialog {
 					
 					SCL.getCurrPrimeCanvas().getDtoCanvas().setImageId(Integer.parseInt(id));
 					SCL.getCurrPrimeCanvas().getDtoCanvas().setImageType(type);
-					SCL.getCanvasScreen().updateImage();
+					SCL.getCurrPrimeCanvas().loadImage();
 
 				} else {
 					log.severe("Error in singleUploader.onFinishUploadHandler()! " + uploader.getStatus());
@@ -225,9 +226,9 @@ public class CanvasDialog {
 			SCL.getPrevPrimeCanvas().unhighlight();
 		}
 		SCL.setCurrPrimeCanvas(canvasLabel);
+		
 		if(SCL.getCurrPrimeCanvas()!=null) {
-			Vector canvasLabels = new Vector();
-			SCL.getCurrPrimeCanvas().setCanvasLabels(canvasLabels);
+			Vector<String> canvasLabels = new Vector<String>();
 			canvasLabels.add(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 
 			DTOCanvas tempCanvas = SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas();;
@@ -258,16 +259,16 @@ public class CanvasDialog {
 				public void onSuccess(Object result) {
 					DTOCanvases dtoCanvases = (DTOCanvases) result;
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
+					SCL.getBreadCrumb().openCanvas();
 					
 				}
 			};
 			ServiceUtilities.getEquipService().getCanvasesByCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
-			
 				
 		}
+		
 		SCL.getCanvasScreen().updateImage();
 		singleUploader.setServletPath(".gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
-		
 		
 		
 	}
@@ -350,15 +351,18 @@ public class CanvasDialog {
 				DTOLinks dtoLinks = (DTOLinks) result;
 				SCL.getCurrSecCanvas().getDtoCanvas().setDtoLinks(dtoLinks);
 				linkPanel.updateLinks();
+				SCL.getCanvasScreen().draw();
 			}
 		};
 		ServiceUtilities.getEquipService().updateLinkNodes(SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks(), callback);
 		
 	}
 
-	
+	public CanvasPanel getCanvasPanel() {
+		return canvasPanel;
+		
+	}
 
-	
 	
 
 }

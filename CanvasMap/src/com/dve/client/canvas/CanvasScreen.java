@@ -81,7 +81,6 @@ public class CanvasScreen extends Composite {
 							SCL.getCanvasDialog().openCanvas(canvasLabel);
 						}
 					}
-
 				}
 			}
 		});
@@ -229,7 +228,7 @@ public class CanvasScreen extends Composite {
 
 	public void updateImage() {
 		log.info("UpdateImage");
-		if(SCL.getCurrPrimeCanvas()!=null) {
+		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId()!=-1) {
 
 			SCL.getWaiting().show();
 			
@@ -259,6 +258,7 @@ public class CanvasScreen extends Composite {
 			t.schedule(100);
 			
 		} else {
+			log.info("clearing");
 			context0.clearRect(0,0,canvas0.getOffsetWidth(), canvas0.getOffsetHeight());
 			context1.clearRect(0,0,canvas1.getCoordinateSpaceWidth(),canvas1.getCoordinateSpaceHeight());
 

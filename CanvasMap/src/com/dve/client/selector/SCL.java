@@ -1,5 +1,6 @@
 package com.dve.client.selector;
 
+import com.dve.client.CanvasBreadCrumb;
 import com.dve.client.canvas.CanvasScreen;
 import com.dve.client.canvas.dialog.CanvasDialog;
 import com.dve.client.canvas.dialog.CanvasLabel;
@@ -13,6 +14,7 @@ public class SCL {
 	
 	private static CanvasDialog canvasDialog;
 	private static CanvasScreen canvasScreen;
+	private static CanvasBreadCrumb breadCrumb;
 	
 	private static CanvasLabel rootLabel;
 	
@@ -33,6 +35,12 @@ public class SCL {
 	}
 	public static void setCanvasDialog(CanvasDialog canvasDialog) {
 		SCL.canvasDialog = canvasDialog;
+	}
+	public static CanvasBreadCrumb getBreadCrumb() {
+		return breadCrumb;
+	}
+	public static void setBreadCrumb(CanvasBreadCrumb breadCrumb) {
+		SCL.breadCrumb = breadCrumb;
 	}
 	public static CanvasScreen getCanvasScreen() {
 		return canvasScreen;

@@ -93,7 +93,7 @@ public class CanvasPanel extends Composite {
 
 								public void onSuccess(Object result) {
 									if(SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas()!=null) {
-										SCL.getCanvasDialog().setSecCurrCanvas(new CanvasLabel(SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas()));
+										SCL.getCanvasDialog().setSecCurrCanvas(SCL.getCurrPrimeCanvas().getParentCanvasLabel());
 
 									} else {
 										getRootCanvases();
