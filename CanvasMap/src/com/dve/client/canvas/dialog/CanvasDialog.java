@@ -65,6 +65,8 @@ public class CanvasDialog {
 	Button modeBtn = new Button("Edit Mode");
 	Label zoomLA = new Label("Zoom = ");
 	
+	Button okBtn = new Button("Ok");
+	
 	DTOProjects dtoProjects;
 	DTOProject dtoProject;
 	
@@ -112,6 +114,8 @@ public class CanvasDialog {
 		centerPanel.setWidth("100%");
 		centerPanel.setHeight("100%");
 		
+		bottomPanel.add(okBtn);
+		
 		mainPanel.add(bottomPanel);
 	
 		nonModalDialog.setAutoHideEnabled(false);
@@ -149,6 +153,13 @@ public class CanvasDialog {
 					modeBtn.setText("Edit Mode");
 					return;
 				}
+				
+			}
+		});
+		
+		okBtn.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				nonModalDialog.hide();
 				
 			}
 		});
