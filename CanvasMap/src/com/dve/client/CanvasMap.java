@@ -119,6 +119,7 @@ public class CanvasMap implements EntryPoint {
 		
 		SCL.setCanvasDialog(canvasDialog);
 		SCL.setCanvasScreen(canvasScreen);
+		SCL.setCanvasResourcePanel(canvasResourcePanel);
 		SCL.setBreadCrumb(breadCrumb);
 		
 		tabBar.addTab("Map");
@@ -148,6 +149,7 @@ public class CanvasMap implements EntryPoint {
 					if(centerPanel.getWidget(0)!=canvasResourcePanel) {
 						centerPanel.clear();
 						centerPanel.add(canvasResourcePanel);
+						canvasResourcePanel.updateResourcePanel();
 						
 					}
 				}

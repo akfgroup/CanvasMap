@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import com.dve.client.link.LinkShape;
 import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
+import com.dve.client.utilities.ServiceUtilities;
 import com.dve.shared.dto.canvas.DTOCanvas;
 import com.dve.shared.dto.canvas.DTOCanvases;
 import com.dve.shared.dto.canvas.DTOLink;
@@ -17,6 +18,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -235,6 +237,23 @@ public class CanvasLabel extends Composite {
 			}
 		});
 		
+	}
+
+	public void updateResource() {
+		AsyncCallback callback = new AsyncCallback() {
+			public void onFailure(Throwable caught) {
+				log.severe(caught.getMessage());
+
+			}
+
+			public void onSuccess(Object result) {
+				DTOCanvas dtoCanvas = (DTOCanvas) result;
+				SCL.getCanvasResourcePanel().updateResourcePanel();
+				
+			}
+		};
+		ServiceUtilities.getEquipService().updateCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
+
 	}
 
 }

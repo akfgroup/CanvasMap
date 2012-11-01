@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.link.LinkShape;
 import com.dve.client.selector.SCL;
-import com.dve.shared.dto.canvas.DTOCanvas;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;

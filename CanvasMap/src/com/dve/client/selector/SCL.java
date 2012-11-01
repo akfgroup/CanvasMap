@@ -8,11 +8,13 @@ import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.image.ImageDialog;
 import com.dve.client.link.LinkDialog;
 import com.dve.client.link.LinkLabel;
+import com.dve.client.resource.CanvasResourcePanel;
 import com.dve.shared.dto.canvas.DTOCanvases;
 
 public class SCL {
 	
 	private static CanvasDialog canvasDialog;
+	private static CanvasResourcePanel canvasResourcePanel;
 	private static CanvasScreen canvasScreen;
 	private static CanvasBreadCrumb breadCrumb;
 	
@@ -47,6 +49,13 @@ public class SCL {
 	}
 	public static void setCanvasScreen(CanvasScreen canvasScreen) {
 		SCL.canvasScreen = canvasScreen;
+	}
+	public static CanvasResourcePanel getCanvasResourcePanel() {
+		return canvasResourcePanel;
+	}
+	public static void setCanvasResourcePanel(
+			CanvasResourcePanel canvasResourcePanel) {
+		SCL.canvasResourcePanel = canvasResourcePanel;
 	}
 	public static CanvasLabel getRootLabel() {
 		return rootLabel;
