@@ -105,16 +105,24 @@ public class CanvasBreadCrumb extends Composite {
 				} else {
 					if(tempCanvasLabel!=SCL.getRootLabel()) {
 //						log.info("id = " + tempCanvasLabel.getDtoCanvas().getId());
-						CanvasBreadCrumbLB lb = (CanvasBreadCrumbLB) mainPanel1.getWidget(mainPanel1.getWidgetCount()-widgeCnt);
-						for(int i=0; i<lb.canvasLabel.getCanvasLabels().size(); i++) {
-							CanvasLabel temp = lb.canvasLabel.getCanvasLabels().get(i);
-//							log.info("tempCanvasLabel.id = " + tempCanvasLabel.getDtoCanvas().getId());
-//							log.info("temp.id = " + temp.getDtoCanvas().getId());
-							if(tempCanvasLabel==temp) {
-								lb.listBox.setSelectedIndex(i+1);
+						try {
+							CanvasBreadCrumbLB lb = (CanvasBreadCrumbLB) mainPanel1.getWidget(mainPanel1.getWidgetCount()-widgeCnt);
+							for(int i=0; i<lb.canvasLabel.getCanvasLabels().size(); i++) {
+								CanvasLabel temp = lb.canvasLabel.getCanvasLabels().get(i);
+								//							log.info("tempCanvasLabel.id = " + tempCanvasLabel.getDtoCanvas().getId());
+								//							log.info("temp.id = " + temp.getDtoCanvas().getId());
+								if(tempCanvasLabel==temp) {
+									lb.listBox.setSelectedIndex(i+1);
+								}
 							}
+						} catch (IndexOutOfBoundsException e) {
+							log.severe("OpenCanvas Error IndexOutOfBounds()!");
+							
 						}
 						widgeCnt++;
+						if(widgeCnt>mainPanel1.getWidgetCount()) {
+							valid = false;
+						}
 						tempCanvasLabel=tempCanvasLabel.getParentCanvasLabel();
 					} else {
 //						log.info("id = root");

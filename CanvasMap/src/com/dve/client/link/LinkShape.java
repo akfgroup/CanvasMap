@@ -3,7 +3,7 @@ package com.dve.client.link;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import com.dve.client.canvas.CanvasScreen;
+import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.selector.SCL;
 import com.dve.shared.dto.canvas.DTOLink;
 import com.dve.shared.dto.canvas.DTOLinks;

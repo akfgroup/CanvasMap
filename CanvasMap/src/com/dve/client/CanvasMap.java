@@ -1,15 +1,29 @@
 package com.dve.client;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
-import com.dve.client.canvas.CanvasScreen;
+import com.dve.client._views.LoginView;
 import com.dve.client.canvas.dialog.CanvasDialog;
+import com.dve.client.canvas.screen.CanvasScreen;
+import com.dve.client.login.Login;
+import com.dve.client.resource.CanvasResourcePanel;
 import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
+import com.dve.client.utilities.FormUtilities;
+import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -19,23 +33,29 @@ public class CanvasMap implements EntryPoint {
 	
 	CanvasMap canvasMap;
 	
-	CanvasScreen canvasScreen = new CanvasScreen();
-	CanvasDialog canvasDialog = new CanvasDialog();
+	CanvasScreen canvasScreen;
+	CanvasResourcePanel canvasResourcePanel;
+	
+	CanvasDialog canvasDialog;
+	CanvasBreadCrumb breadCrumb;
 	
 	VerticalPanel mainPanel = new VerticalPanel();
 	
 	TabBar tabBar = new TabBar();
-	CanvasBreadCrumb breadCrumb = new CanvasBreadCrumb();
 	
 	HorizontalPanel topPanel = new HorizontalPanel();
 	VerticalPanel centerPanel = new VerticalPanel();
 	HorizontalPanel btnPanel = new HorizontalPanel();
+	
+	LoginView loginView = new LoginView();
 	
 	Logger log = Logger.getLogger(CanvasMap.class.getName());
 	
 
 	public void onModuleLoad() {
 		log.info("On ModuleLoad()");
+		canvasMap = this;
+		SC.setCanvasMap(canvasMap);
 		
 		if(GWT.isProdMode()) {
 			GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -47,13 +67,55 @@ public class CanvasMap implements EntryPoint {
 			});
 			SC.setContextName("/canvasmap");
 		}
-
-		startUp();
+		
+		DeferredCommand.addCommand(new Command() { 
+			public void execute() {
+				dologin();
+			}
+		}); 
 		
 	}
 	
+	private void dologin() {
+		checkWithServerIfSessionIsStillLegal();
+
+	}
+	
+	public void checkWithServerIfSessionIsStillLegal() {
+		if(Storage.getLocalStorage().getItem("sid") != null && 
+				Storage.getLocalStorage().getItem("to") != null &&
+				Long.parseLong(Storage.getLocalStorage().getItem("to"))>System.currentTimeMillis()) {
+
+			log.info("FormsUI_v2.checkWithServerIfSessionIsStillLegal() sessionID = " + Storage.getLocalStorage().getItem("sid"));
+			Login.checkRemoteSession(Storage.getLocalStorage().getItem("sid"));
+
+		} else {
+			log.info("FormsUI_v2.checkWithServerIfSessionIsStillLegal() sessionID = NULL!");
+			displaylogin(true);
+		}
+
+	}
+	
+	public void displaylogin(boolean reset) {
+		log.info("FormsUI_v2.displaylogin() 22");
+		
+		SC.setCurrentUser(null);
+
+		RootLayoutPanel.get().clear();
+		if(reset) {
+			loginView.reset();
+		}
+		RootLayoutPanel.get().add(loginView);
+		RootLayoutPanel.get().setWidgetTopHeight(loginView, 75, Unit.PX, 336, Unit.PX);
+		RootLayoutPanel.get().setWidgetLeftWidth(loginView, 50, Unit.PX, 100, Unit.PCT);
+
+	}
+	
 	private void startUp() {
-		canvasMap = this;
+		canvasScreen = new CanvasScreen();
+		canvasResourcePanel = new CanvasResourcePanel();
+		canvasDialog = new CanvasDialog();
+		breadCrumb = new CanvasBreadCrumb();
 		
 		SCL.setCanvasDialog(canvasDialog);
 		SCL.setCanvasScreen(canvasScreen);
@@ -74,6 +136,25 @@ public class CanvasMap implements EntryPoint {
 		
 		centerPanel.add(canvasScreen);
 		
+		tabBar.addSelectionHandler(new SelectionHandler() {
+			public void onSelection(SelectionEvent event) {
+				if(tabBar.getSelectedTab()==0) {
+					if(centerPanel.getWidget(0)!=canvasScreen) {
+						centerPanel.clear();
+						centerPanel.add(canvasScreen);
+						
+					}
+				} else if(tabBar.getSelectedTab()==1) {
+					if(centerPanel.getWidget(0)!=canvasResourcePanel) {
+						centerPanel.clear();
+						centerPanel.add(canvasResourcePanel);
+						
+					}
+				}
+			}
+		});
+		
+		RootPanel.get().clear();
 		RootPanel.get().add(mainPanel);
 		
 		SCL.getCanvasDialog().center();
@@ -112,9 +193,55 @@ public class CanvasMap implements EntryPoint {
 			}
 		}
 		return log;
-	} 
+	}
 	
+	public void setAppVersion(String version) {
+		log.info("Editor.dologin() setAppVersion()");
+		Storage.getLocalStorage().setItem("version", version);
+		
+		SC.setSessionId(stripHTML(SC.getSessionId()));
+		log.info("Editor.dologin() onSubmitComplete() sessionID = " + SC.getSessionId());
+		if(!SC.getSessionId().equals("failed")) {
+			final long DURATION = 1000 * FormUtilities.getSessionTimeOut() + System.currentTimeMillis();
+			Storage.getLocalStorage().setItem("sid", SC.getSessionId());
+			Storage.getLocalStorage().setItem("to", Long.toString(DURATION));
+			checkWithServerIfSessionIsStillLegal();
 
+		} 
+		else {
+			displaylogin(true);
+			loginView.setError();
+
+		}
+
+		String clientVersion = Storage.getLocalStorage().getItem("version");
+
+		if(clientVersion!=null && !clientVersion.equals(version)) {
+			log.info("Client is out of date!");
+			log.info("The current version = " + version + ", reloading!");
+			Long DURATION = new Long("2592000000");
+			Date expires = new Date(System.currentTimeMillis() + DURATION);
+			Storage.getLocalStorage().setItem("version", version);
+			Window.Location.reload();
+			checkWithServerIfSessionIsStillLegal();
+
+		}
+
+
+	}
+
+	public void display() {
+		new Timer(){
+			public void run() {
+				startUp();
+			}	
+		}.schedule(50);
+		
+	}
+	
+	private String stripHTML(String sessionID) {
+		return sessionID.replaceAll("\\<[^>]*>","");
+	}
 	
 
 }

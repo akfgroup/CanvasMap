@@ -10,8 +10,6 @@ import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.UploadedInfo;
 
-import com.dve.client.CanvasBreadCrumb;
-import com.dve.client.canvas.CanvasPanel;
 import com.dve.client.dialogs.nonmodal.ModalDialog;
 import com.dve.client.dialogs.nonmodal.NonModalClickhandler;
 import com.dve.client.link.LinkLabel;
@@ -29,7 +27,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -54,7 +51,7 @@ public class CanvasDialog {
 		
 	FlexTable flexTable = new FlexTable();
 	
-	CanvasPanel canvasPanel = new CanvasPanel();
+	CanvasDialogPanel canvasPanel = new CanvasDialogPanel();
 	VerticalPanel imagePanel = new VerticalPanel();
 	LinkPanel linkPanel = new LinkPanel();
 	
@@ -369,7 +366,7 @@ public class CanvasDialog {
 		
 	}
 
-	public CanvasPanel getCanvasPanel() {
+	public CanvasDialogPanel getCanvasPanel() {
 		return canvasPanel;
 		
 	}

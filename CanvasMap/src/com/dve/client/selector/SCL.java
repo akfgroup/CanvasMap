@@ -1,10 +1,10 @@
 package com.dve.client.selector;
 
 import com.dve.client.CanvasBreadCrumb;
-import com.dve.client.canvas.CanvasScreen;
 import com.dve.client.canvas.dialog.CanvasDialog;
 import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.canvas.dialog.Waiting;
+import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.image.ImageDialog;
 import com.dve.client.link.LinkDialog;
 import com.dve.client.link.LinkLabel;

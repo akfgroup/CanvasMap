@@ -1,6 +1,6 @@
 package com.dve.client.link;
 
-import com.dve.client.canvas.CanvasScreen;
+import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.dialogs.nonmodal.NonModalClickhandler;
 import com.dve.client.dialogs.nonmodal.NonModalDialog;
 import com.dve.client.selector.SC;
