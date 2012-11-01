@@ -72,7 +72,7 @@ public class CanvasDialog {
 	
 	public CanvasDialog() {
 		
-		singleUploader.setServletPath(".gupld?canvasId=");
+		singleUploader.setServletPath("../" + SC.getContextName() + "/gupld?canvasId=");
 		
 		bottomPanel.setWidth("100%");
 		
@@ -268,7 +268,7 @@ public class CanvasDialog {
 		}
 		
 		SCL.getCanvasScreen().updateImage();
-		singleUploader.setServletPath(".gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
+		singleUploader.setServletPath("../" + SC.getContextName() + "/gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 		
 		
 	}
