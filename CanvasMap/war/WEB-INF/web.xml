@@ -9,7 +9,8 @@
   
   <servlet>
     <servlet-name>remoteLogging</servlet-name>
-    <servlet-class>com.dve.server.MyRemoteLogginService</servlet-class>
+<!-- <servlet-class>com.dve.server.MyRemoteLogginService</servlet-class> -->
+	<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>
