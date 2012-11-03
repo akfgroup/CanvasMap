@@ -56,6 +56,7 @@ public class CanvasMap implements EntryPoint {
 		log.info("On ModuleLoad()");
 		canvasMap = this;
 		SC.setCanvasMap(canvasMap);
+		SC.setContextName("/canvasmap");
 		
 		if(GWT.isProdMode()) {
 			GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -65,8 +66,8 @@ public class CanvasMap implements EntryPoint {
 
 				}
 			});
-			SC.setContextName("/canvasmap");
 		}
+		
 		
 		DeferredCommand.addCommand(new Command() { 
 			public void execute() {
