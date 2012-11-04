@@ -43,9 +43,11 @@ public class CanvasBreadCrumb extends Composite {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas()!=null) {
+					log.info("1");
 					SCL.getCanvasDialog().openCanvas(SCL.getCurrPrimeCanvas().getParentCanvasLabel());
 					
 				} else {
+					log.info("2");
 					SCL.getCanvasDialog().getCanvasPanel().getRootCanvases();
 					
 				}
@@ -74,6 +76,10 @@ public class CanvasBreadCrumb extends Composite {
 			CanvasLabel canvasLabel = it.next();
 			rootCanvas.addItem(canvasLabel.getDtoCanvas().getId() + " - " + canvasLabel.getDtoCanvas().getName());
 
+		}
+		if(mainPanel1.getWidget(0).getClass()==CanvasBreadCrumbLB.class) {
+			CanvasBreadCrumbLB cbLB = (CanvasBreadCrumbLB) mainPanel1.getWidget(0);
+			cbLB.listBox.setSelectedIndex(0);
 		}
 
 	}

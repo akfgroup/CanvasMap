@@ -59,6 +59,7 @@ public class CanvasDialogPanel extends Composite {
 					public void onSuccess(Object result) {
 						DTOCanvas dtoCanvas = (DTOCanvas) result;
 						CanvasLabel canvasLabel = new CanvasLabel(dtoCanvas);
+						SCL.getCurrPrimeCanvas().getCanvasLabels().add(canvasLabel);
 						canvasTable.setWidget(canvasTable.getRowCount(), 0, canvasLabel);
 
 					}
@@ -139,6 +140,7 @@ public class CanvasDialogPanel extends Composite {
 				rootLabel.setDtoCanvases((DTOCanvases) result);
 				
 				SCL.getCanvasDialog().nonModalDialog.setText("Canvas - Roots");
+				SCL.getBreadCrumb().updateRoot();
 			
 			}
 		};

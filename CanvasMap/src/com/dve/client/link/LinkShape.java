@@ -1,10 +1,15 @@
 package com.dve.client.link;
 
+import gwt.awt.Polygon;
+
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import com.dve.client.canvas.dialog.CanvasLabel;
+
 import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.selector.SCL;
+import com.dve.shared.dto.canvas.DTOCanvas;
 import com.dve.shared.dto.canvas.DTOLink;
 import com.dve.shared.dto.canvas.DTOLinks;
 
@@ -21,6 +26,8 @@ public class LinkShape {
 	DTOLinks dtoLinks;
 
 	DTOLink dtoLink;
+	
+	Polygon polygon = new Polygon();
 
 	boolean moving;
 
@@ -153,6 +160,7 @@ public class LinkShape {
 
 		DTOLink prevP = null;
 		DTOLink currP = null;
+		polygon.reset();
 
 		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
@@ -174,6 +182,7 @@ public class LinkShape {
 				canvasScreen.context1.stroke();
 			}
 
+			polygon.addPoint(getCoord(p.getX()), getCoord(p.getY()));
 			currP = p;
 
 		}
@@ -201,6 +210,14 @@ public class LinkShape {
 		double x = (double)coord;
 //		log.info("getRevCoord() zoom = " + canvasScreen.zoom);
 		return (int)(x/canvasScreen.zoom);
+	}
+	
+	public boolean contains(double x, double y) {
+		if(polygon.contains(x,y)) {
+			return true;
+		}
+		return false;
+
 	}
 	
 	public void highlight() {

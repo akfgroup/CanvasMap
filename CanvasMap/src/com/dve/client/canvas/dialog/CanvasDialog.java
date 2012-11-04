@@ -58,7 +58,6 @@ public class CanvasDialog {
 	SingleUploader singleUploader = new SingleUploader();
 	Label imageLA = new Label();
 	
-	PushButton backBtn = new PushButton(new Image(EquipUtilities.getIr().undo()));
 	Button modeBtn = new Button("Edit Mode");
 	Label zoomLA = new Label("Zoom = ");
 	
@@ -75,7 +74,6 @@ public class CanvasDialog {
 		
 		bottomPanel.setWidth("100%");
 		
-		topPanel.add(backBtn);
 		topPanel.add(modeBtn);
 		topPanel.add(zoomLA);
 		
@@ -124,19 +122,6 @@ public class CanvasDialog {
 		nonModalDialog.addClickHandler(new NonModalClickhandler());
 
 		DOM.setStyleAttribute(nonModalDialog.getElement(), "backgroundColor", "white");
-		
-		backBtn.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas()!=null) {
-					SCL.getCanvasDialog().openCanvas(SCL.getCurrPrimeCanvas().getParentCanvasLabel());
-					
-				} else {
-					canvasPanel.getRootCanvases();
-					
-				}
-			}
-		});
 		
 		modeBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -268,6 +253,7 @@ public class CanvasDialog {
 					DTOCanvases dtoCanvases = (DTOCanvases) result;
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
 					SCL.getBreadCrumb().openCanvas();
+					SCL.getCanvasScreen().updateImage();
 					
 				}
 			};
@@ -275,7 +261,7 @@ public class CanvasDialog {
 				
 		}
 		
-		SCL.getCanvasScreen().updateImage();
+		
 		singleUploader.setServletPath("../" + SC.getContextName() + "/gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 		
 		

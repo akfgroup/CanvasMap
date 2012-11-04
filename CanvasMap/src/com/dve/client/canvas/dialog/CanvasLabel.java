@@ -1,7 +1,5 @@
 package com.dve.client.canvas.dialog;
 
-import gwt.awt.Polygon;
-
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -159,31 +157,12 @@ public class CanvasLabel extends Composite {
 
 	}
 
-	public void getLink(int x, int y) {
-		if(contains(x,y)!=null) {
-			Window.alert(x + ", " + y);
-		}
-
-	}
-
 	public CanvasLabel contains(double x, double y) {
-
-		DTOCanvas tempCanvas = null;
-		if(dtoCanvases!=null) {
-			for(int i=0; i<dtoCanvases.getDTOCanvases().size(); i++) {
-				tempCanvas = dtoCanvases.getDTOCanvases().get(i);
-				if(tempCanvas.getDtoLinks()!=null) {
-					Polygon polygon = new Polygon();
-					Iterator<DTOLink> it = tempCanvas.getDtoLinks().getDTOLinks().iterator();
-					while(it.hasNext()) {
-						DTOLink p = it.next();
-						polygon.addPoint((int)((double)p.getX()*SCL.getCanvasScreen().zoom), (int)((double)p.getY()*SCL.getCanvasScreen().zoom));
-					}
-					if(polygon.contains(x,y)) {
-						return canvasLabels.get(i);
-					}
-				} 
-
+		Iterator<CanvasLabel> it = canvasLabels.iterator();
+		while(it.hasNext()) {
+			CanvasLabel temp = it.next();
+			if(temp.linkShape.contains(x, y)) {
+				return temp;
 			}
 		}
 		return null;
