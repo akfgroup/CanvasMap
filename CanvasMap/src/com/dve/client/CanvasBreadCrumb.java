@@ -60,17 +60,9 @@ public class CanvasBreadCrumb extends Composite {
 
 	}
 
-	public void clear() {
-		while(mainPanel1.getWidgetCount()>1) {
-			mainPanel1.remove(1);
-		}
+	public void updateRoot() {
 		rootCanvas.clear();
 		rootCanvas.addItem("");
-
-	}
-
-	public void updateRoot() {
-		clear();
 		Iterator<CanvasLabel> it = SCL.getRootLabel().getCanvasLabels().iterator();
 		while(it.hasNext()) {
 			CanvasLabel canvasLabel = it.next();

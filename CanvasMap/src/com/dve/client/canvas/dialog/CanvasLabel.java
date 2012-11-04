@@ -161,7 +161,7 @@ public class CanvasLabel extends Composite {
 		Iterator<CanvasLabel> it = canvasLabels.iterator();
 		while(it.hasNext()) {
 			CanvasLabel temp = it.next();
-			if(temp.linkShape.contains(x, y)) {
+			if(temp.linkShape!=null && temp.linkShape.contains(x, y)) {
 				return temp;
 			}
 		}
@@ -203,7 +203,7 @@ public class CanvasLabel extends Composite {
 	}
 
 	public void loadImage() {
-		image.setUrl(SC.getContextName() + "/getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
+		image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
 
 		ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
 			public void imageLoaded(ImageLoadEvent event) {

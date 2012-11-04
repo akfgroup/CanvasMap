@@ -55,10 +55,10 @@ public class CanvasDialog {
 	VerticalPanel imagePanel = new VerticalPanel();
 	LinkPanel linkPanel = new LinkPanel();
 	
-	SingleUploader singleUploader = new SingleUploader();
+	private SingleUploader singleUploader = new SingleUploader();
 	Label imageLA = new Label();
 	
-	Button modeBtn = new Button("Edit Mode");
+	Button modeBtn = new Button("User Mode");
 	Label zoomLA = new Label("Zoom = ");
 	
 	Button okBtn = new Button("Ok");
@@ -69,8 +69,6 @@ public class CanvasDialog {
 	Logger log = Logger.getLogger(CanvasDialog.class.getName());
 	
 	public CanvasDialog() {
-		
-		singleUploader.setServletPath("../" + SC.getContextName() + "/gupld?canvasId=");
 		
 		bottomPanel.setWidth("100%");
 		
@@ -262,7 +260,7 @@ public class CanvasDialog {
 		}
 		
 		
-		singleUploader.setServletPath("../" + SC.getContextName() + "/gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
+		singleUploader.setServletPath(".gupld?canvasId="+SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 		
 		
 	}
