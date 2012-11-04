@@ -46,7 +46,7 @@ public class CanvasScreen extends Composite {
 	boolean mouseDn;
 	int mouseDnX, mouseDnY;
 
-	public int spacing = 10;
+	public int spacing = 1;
 	public double zoom = 1.0;
 
 	AbsolutePanel absolutePanel = new AbsolutePanel();
