@@ -75,6 +75,7 @@ public class CanvasLabel extends Composite {
 			
 			if(dtoCanvas.getImageId()!=-1) {
 				image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
+				log.info("image url = " + image.getUrl());
 
 				ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
 					public void imageLoaded(ImageLoadEvent event) {

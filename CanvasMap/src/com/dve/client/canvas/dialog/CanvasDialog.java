@@ -22,9 +22,12 @@ import com.dve.shared.dto.canvas.DTOCanvases;
 import com.dve.shared.dto.canvas.DTOLinks;
 import com.dve.shared.dto.project.DTOProject;
 import com.dve.shared.dto.project.DTOProjects;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -252,9 +255,15 @@ public class CanvasDialog {
 					DTOCanvases dtoCanvases = (DTOCanvases) result;
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
 					SCL.getBreadCrumb().openCanvas();
-					SCL.getCanvasScreen().updateImage();
 					SCL.getCanvasResourcePanel().updateResourcePanel();
 					linkPanel.updateLinks();
+					
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							SCL.getCanvasScreen().updateImage();
+						}
+					});
 					
 				}
 			};

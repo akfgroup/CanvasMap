@@ -7,6 +7,8 @@ import com.dve.client.link.LinkShape;
 import com.dve.client.selector.SCL;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
@@ -227,6 +229,14 @@ public class CanvasScreen extends Composite {
 
 	public void updateImage() {
 		log.info("UpdateImage");
+		Timer t = new Timer() {
+			@Override
+			public void run() {
+			}
+			
+		};
+		t.schedule(100);
+		
 		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId()!=-1) {
 
 			SCL.getWaiting().show();
@@ -247,14 +257,13 @@ public class CanvasScreen extends Composite {
 			context0 = canvas0.getContext2d();
 			context0.drawImage(ImageElement.as(SCL.getCurrPrimeCanvas().getImage().getElement()),0,0, width, height);
 
-			Timer t = new Timer(){
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
-				public void run() {
+				public void execute() {
 					SCL.getCurrPrimeCanvas().drawLinks();
 					SCL.getWaiting().close();
 				}
-			};
-			t.schedule(100);
+			});
 			
 		} else {
 			log.info("clearing");

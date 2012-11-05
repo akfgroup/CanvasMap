@@ -59,7 +59,11 @@ public class CanvasDialogPanel extends Composite {
 					public void onSuccess(Object result) {
 						DTOCanvas dtoCanvas = (DTOCanvas) result;
 						CanvasLabel canvasLabel = new CanvasLabel(dtoCanvas);
-						SCL.getCurrPrimeCanvas().getCanvasLabels().add(canvasLabel);
+						if(SCL.getCurrPrimeCanvas()!=null) {
+							SCL.getCurrPrimeCanvas().getCanvasLabels().add(canvasLabel);
+						} else {
+							SCL.getRootLabel().getCanvasLabels().add(canvasLabel);
+						}
 						canvasLabel.parentCanvasLabel=SCL.getCurrPrimeCanvas();
 						canvasTable.setWidget(canvasTable.getRowCount(), 0, canvasLabel);
 
