@@ -29,12 +29,12 @@ public class CanvasNameLabel extends Composite {
 	
 	public CanvasNameLabel() {
 		
-		nameLA.setPixelSize(100, 25);
+		nameLA.setPixelSize(300, 20);
 		nameLA.getElement().getStyle().setBorderColor("gray");
 		nameLA.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
 		nameLA.getElement().getStyle().setBorderWidth(1, Unit.PX);
 		
-		nameTB.setPixelSize(100, 25);
+		nameTB.setPixelSize(300, 20);
 		nameTB.getElement().getStyle().setBorderColor("yellow");
 		nameTB.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
 		nameTB.getElement().getStyle().setBorderWidth(1, Unit.PX);

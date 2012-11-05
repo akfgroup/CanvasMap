@@ -192,7 +192,7 @@ public class CanvasScreen extends Composite {
 		absolutePanel.add(canvas0,0,0);
 		absolutePanel.add(canvas1,0,0);
 
-		scrollPanel.setPixelSize(Window.getClientWidth(), Window.getClientHeight());
+		scrollPanel.setPixelSize(Window.getClientWidth()-(int)(Window.getClientWidth()*.05), Window.getClientHeight()-(int)(Window.getClientHeight()*.05));
 		scrollPanel.setWidget(absolutePanel);
 
 		initWidget(scrollPanel);
