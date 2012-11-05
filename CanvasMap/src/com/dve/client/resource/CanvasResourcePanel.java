@@ -32,6 +32,7 @@ public class CanvasResourcePanel extends Composite {
 		topPanel.add(orgBtn);
 		topPanel.add(bldgBtn);
 		
+		mainPanel.setWidth("100%");
 		mainPanel.add(topPanel);
 		mainPanel.add(centerPanel);
 		mainPanel.add(bottomPanel);
@@ -56,7 +57,7 @@ public class CanvasResourcePanel extends Composite {
 
 	public void updateResourcePanel() {
 		centerPanel.clear();
-		if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId()!=-1) {
+		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId()!=-1) {
 			if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetType()==ASSETS.get("org")) {
 				OrgResource resource = new OrgResource();
 				resource.setAssetId(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId());

@@ -132,7 +132,9 @@ public class CanvasMap implements EntryPoint {
 		topPanel.add(tabBar);
 		topPanel.add(breadCrumb);
 		
+		mainPanel.setWidth("100%");
 		mainPanel.add(topPanel);
+		centerPanel.setWidth("100%");
 		mainPanel.add(centerPanel);
 		mainPanel.add(btnPanel);
 		
@@ -144,13 +146,13 @@ public class CanvasMap implements EntryPoint {
 					if(centerPanel.getWidget(0)!=canvasScreen) {
 						centerPanel.clear();
 						centerPanel.add(canvasScreen);
+						canvasScreen.updateImage();
 						
 					}
 				} else if(tabBar.getSelectedTab()==1) {
-					if(centerPanel.getWidget(0)!=canvasResourcePanel) {
+					if(SCL.getCurrPrimeCanvas()!=null && centerPanel.getWidget(0)!=canvasResourcePanel) {
 						centerPanel.clear();
 						centerPanel.add(canvasResourcePanel);
-						canvasResourcePanel.updateResourcePanel();
 						
 					}
 				}

@@ -142,6 +142,8 @@ public class CanvasDialogPanel extends Composite {
 				
 				SCL.getCanvasDialog().nonModalDialog.setText("Canvas - Roots");
 				SCL.getBreadCrumb().updateRoot();
+				SCL.getCanvasScreen().updateImage();
+				SCL.getCanvasResourcePanel().updateResourcePanel();
 			
 			}
 		};

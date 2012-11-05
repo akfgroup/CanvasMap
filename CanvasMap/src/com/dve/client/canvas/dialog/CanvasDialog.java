@@ -17,7 +17,6 @@ import com.dve.client.link.LinkPanel;
 import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.client.utilities.ServiceUtilities;
-import com.dve.equip.client.utilities.EquipUtilities;
 import com.dve.shared.dto.canvas.DTOCanvas;
 import com.dve.shared.dto.canvas.DTOCanvases;
 import com.dve.shared.dto.canvas.DTOLinks;
@@ -33,9 +32,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 
@@ -60,6 +57,7 @@ public class CanvasDialog {
 	
 	Button modeBtn = new Button("User Mode");
 	Label zoomLA = new Label("Zoom = ");
+	CanvasNameLabel canvasNameLabel = new CanvasNameLabel();
 	
 	Button okBtn = new Button("Ok");
 	
@@ -74,6 +72,7 @@ public class CanvasDialog {
 		
 		topPanel.add(modeBtn);
 		topPanel.add(zoomLA);
+		topPanel.add(canvasNameLabel);
 		
 		mainPanel.setBorderWidth(1);
 		mainPanel.add(topPanel);
@@ -239,6 +238,8 @@ public class CanvasDialog {
 			}
 			
 			nonModalDialog.setText(label);
+			canvasNameLabel.update();
+			
 			SCL.getCurrPrimeCanvas().highlight();
 			
 			AsyncCallback callback = new AsyncCallback() {
@@ -252,6 +253,8 @@ public class CanvasDialog {
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
 					SCL.getBreadCrumb().openCanvas();
 					SCL.getCanvasScreen().updateImage();
+					SCL.getCanvasResourcePanel().updateResourcePanel();
+					linkPanel.updateLinks();
 					
 				}
 			};
