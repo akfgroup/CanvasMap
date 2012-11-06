@@ -125,17 +125,13 @@ public class CanvasDialog {
 		
 		modeBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(SCL.getCanvasScreen().editMode) {
-					SCL.getCanvasScreen().editMode = false;
+				if(modeBtn.getText().equals("Edit Mode")) {
 					modeBtn.setText("User Mode");
 					return;
 				} 
-				if(!SCL.getCanvasScreen().editMode) {
-					SCL.getCanvasScreen().editMode = true;
-					modeBtn.setText("Edit Mode");
-					return;
-				}
-				
+				modeBtn.setText("Edit Mode");
+				return;
+
 			}
 		});
 		
@@ -193,8 +189,6 @@ public class CanvasDialog {
 		singleUploader.setFileInputSize(40);
 		singleUploader.setEnabled(true);
 		singleUploader.setVisible(true);
-		
-		canvasPanel.getRootCanvases();
 		
 	}
 
@@ -254,12 +248,15 @@ public class CanvasDialog {
 				public void onSuccess(Object result) {
 					DTOCanvases dtoCanvases = (DTOCanvases) result;
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
+					
 					SCL.getBreadCrumb().openCanvas();
-					SCL.getCanvasResourcePanel().updateResourcePanel();
-					linkPanel.updateLinks();
+					SCL.getCurrPrimeCanvas().getResourcePanel().updateResourcePanel();
 					
-					SCL.getCanvasScreen().updateImage();
+					updatePrimeCanvas();
+					SC.getCanvasMap().setCanvasScreen(SCL.getCurrPrimeCanvas().getCanvasScreen());
 					
+					SCL.getCurrPrimeCanvas().updateImage();
+			
 				}
 			};
 			ServiceUtilities.getEquipService().getCanvasesByCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
@@ -279,8 +276,8 @@ public class CanvasDialog {
 			CanvasLabel canvasLabel = it.next();
 			canvasPanel.getCanvasTable().setWidget(canvasPanel.getCanvasTable().getRowCount(), 0, canvasLabel);
 		}
-		SCL.getCanvasScreen().updateImage();
-		
+		nonModalDialog.setText("Canvas - Roots");
+		linkPanel.updateLinks();
 	}
 	
 	public void updatePrimeCanvas() {
@@ -290,6 +287,7 @@ public class CanvasDialog {
 			CanvasLabel canvasLabel = it.next();
 			canvasPanel.getCanvasTable().setWidget(canvasPanel.getCanvasTable().getRowCount(), 0, canvasLabel);
 		}
+		linkPanel.updateLinks();
 		
 	}
 	
@@ -301,6 +299,14 @@ public class CanvasDialog {
 	public Label getZoomLA() {
 		return zoomLA;
 		
+	}
+	
+	public boolean isEdit() {
+		if(modeBtn.getText().equals("User Mode")) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public void center() {
@@ -350,7 +356,7 @@ public class CanvasDialog {
 				DTOLinks dtoLinks = (DTOLinks) result;
 				SCL.getCurrSecCanvas().getDtoCanvas().setDtoLinks(dtoLinks);
 				linkPanel.updateLinks();
-				SCL.getCanvasScreen().draw();
+				SCL.getCurrPrimeCanvas().getCanvasScreen().draw();
 			}
 		};
 		ServiceUtilities.getEquipService().updateLinkNodes(SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks(), callback);

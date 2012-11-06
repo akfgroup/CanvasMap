@@ -77,7 +77,7 @@ public class LinkPanel extends Composite {
 	public void updateLinks() {
 		linkTable.removeAllRows();
 		if(SCL.getCurrSecCanvas()!=null && SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks()!=null) {
-			LinkShape linkShape = new LinkShape(SCL.getCanvasScreen());
+			LinkShape linkShape = new LinkShape();
 			linkShape.setDtoLinkNodes(SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks());
 			SCL.getCurrSecCanvas().setLinkShape(linkShape);
 			Iterator<DTOLink> it = SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks().getDTOLinks().iterator();

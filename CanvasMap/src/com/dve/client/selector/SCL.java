@@ -14,8 +14,6 @@ import com.dve.shared.dto.canvas.DTOCanvases;
 public class SCL {
 	
 	private static CanvasDialog canvasDialog;
-	private static CanvasResourcePanel canvasResourcePanel;
-	private static CanvasScreen canvasScreen;
 	private static CanvasBreadCrumb breadCrumb;
 	
 	private static CanvasLabel rootLabel;
@@ -43,19 +41,6 @@ public class SCL {
 	}
 	public static void setBreadCrumb(CanvasBreadCrumb breadCrumb) {
 		SCL.breadCrumb = breadCrumb;
-	}
-	public static CanvasScreen getCanvasScreen() {
-		return canvasScreen;
-	}
-	public static void setCanvasScreen(CanvasScreen canvasScreen) {
-		SCL.canvasScreen = canvasScreen;
-	}
-	public static CanvasResourcePanel getCanvasResourcePanel() {
-		return canvasResourcePanel;
-	}
-	public static void setCanvasResourcePanel(
-			CanvasResourcePanel canvasResourcePanel) {
-		SCL.canvasResourcePanel = canvasResourcePanel;
 	}
 	public static CanvasLabel getRootLabel() {
 		return rootLabel;

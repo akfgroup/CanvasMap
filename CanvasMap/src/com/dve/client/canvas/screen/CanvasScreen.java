@@ -1,5 +1,7 @@
 package com.dve.client.canvas.screen;
 
+import gwt.g2d.client.graphics.ImageLoader;
+
 import java.util.logging.Logger;
 
 import com.dve.client.canvas.dialog.CanvasLabel;
@@ -34,16 +36,15 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class CanvasScreen extends Composite {
 
-	CanvasScreen canvasPanel;
+	CanvasScreen canvasScreen;
+	CanvasLabel canvasLabel;
 
 	ScrollPanel scrollPanel = new ScrollPanel();
-
+	
 	Canvas canvas0;
 	Canvas canvas1;
 	Context2d context0;
 	public Context2d context1;
-
-	public boolean editMode = false;
 
 	boolean mouseDn;
 	int mouseDnX, mouseDnY;
@@ -58,8 +59,9 @@ public class CanvasScreen extends Composite {
 	Logger log = Logger.getLogger(CanvasScreen.class.getName());
 
 
-	public CanvasScreen() {
-		canvasPanel = this;
+	public CanvasScreen(final CanvasLabel canvasLabel) {
+		canvasScreen = this;
+		this.canvasLabel = canvasLabel;
 
 		canvas0 = Canvas.createIfSupported();
 		canvas1 = Canvas.createIfSupported();
@@ -72,14 +74,14 @@ public class CanvasScreen extends Composite {
 
 		canvas1.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(!editMode) {
+				if(!SCL.getCanvasDialog().isEdit()) {
 					int x = event.getRelativeX(canvas0.getCanvasElement());
 					int y = event.getRelativeY(canvas0.getCanvasElement());
 
 					if(SCL.getCurrPrimeCanvas()!=null) {
-						CanvasLabel canvasLabel = SCL.getCurrPrimeCanvas().contains(x, y);
-						if(canvasLabel!=null) {
-							SCL.getCanvasDialog().openCanvas(canvasLabel);
+						CanvasLabel temp = canvasLabel.contains(x, y);
+						if(temp!=null) {
+							SCL.getCanvasDialog().openCanvas(temp);
 						}
 					}
 				}
@@ -89,7 +91,7 @@ public class CanvasScreen extends Composite {
 		canvas1.addMouseOverHandler(new MouseOverHandler() {
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
-				if(editMode) {
+				if(SCL.getCanvasDialog().isEdit()) {
 					DOM.setStyleAttribute(scrollPanel.getElement(), "cursor", "auto");
 
 				} else {
@@ -108,11 +110,11 @@ public class CanvasScreen extends Composite {
 				int x = event.getRelativeX(canvas0.getCanvasElement());
 				int y = event.getRelativeY(canvas0.getCanvasElement());
 
-				if(editMode) {
+				if(SCL.getCanvasDialog().isEdit()) {
 					if(SCL.getCurrSecCanvas()!=null) {
 						LinkShape linkShape = SCL.getCurrSecCanvas().getLinkShape();
 						if(linkShape==null) {
-							linkShape = new LinkShape(SCL.getCanvasScreen());
+							linkShape = new LinkShape();
 							SCL.getCurrSecCanvas().setLinkShape(linkShape);
 						}
 						SCL.getCurrSecCanvas().getLinkShape().nodeDown(x,y);
@@ -124,12 +126,12 @@ public class CanvasScreen extends Composite {
 
 		canvas1.addMouseMoveHandler(new MouseMoveHandler() {
 			public void onMouseMove(MouseMoveEvent event) {
-				if(editMode && mouseDn && SCL.getCurrSecCanvas()!=null) {
+				if(SCL.getCanvasDialog().isEdit() && mouseDn && SCL.getCurrSecCanvas()!=null) {
 					int x = roundIt(event.getRelativeX(canvas0.getCanvasElement()));
 					int y = roundIt(event.getRelativeY(canvas0.getCanvasElement()));
 					SCL.getCurrSecCanvas().getLinkShape().nodeMove(x,y);
 				}
-				if(!editMode && mouseDn) {
+				if(!SCL.getCanvasDialog().isEdit() && mouseDn) {
 					if(event.getClientX()<mouseDnX) {
 						scrollPanel.setHorizontalScrollPosition(scrollPanel.getHorizontalScrollPosition()+(mouseDnX-event.getClientX()));
 					} else {
@@ -150,7 +152,7 @@ public class CanvasScreen extends Composite {
 		canvas1.addMouseUpHandler(new MouseUpHandler() {
 			public void onMouseUp(MouseUpEvent event) {
 				mouseDn = false;
-				if(editMode) {
+				if(SCL.getCanvasDialog().isEdit()) {
 					int x = roundIt(event.getRelativeX(canvas1.getCanvasElement()));
 					int y = roundIt(event.getRelativeY(canvas1.getCanvasElement()));
 
@@ -209,14 +211,12 @@ public class CanvasScreen extends Composite {
 	}
 
 	public void draw() {
-		if(SCL.getCurrPrimeCanvas()!=null) {
-			Timer t = new Timer() {
-				public void run() {
-					SCL.getCurrPrimeCanvas().drawLinks();
-				}
-			};
-			t.schedule(10);		
-		}
+		Timer t = new Timer() {
+			public void run() {
+				SCL.getCurrPrimeCanvas().drawLinks();
+			}
+		};
+		t.schedule(10);		
 
 	}	
 
@@ -228,10 +228,14 @@ public class CanvasScreen extends Composite {
 	public void updateImage() {
 		log.info("UpdateImage");
 		
-		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId()!=-1) {
+		if(canvasLabel.getDtoCanvas().getImageId()!=-1) {
 			SCL.getWaiting().show();
-		
-			udpateImage2();
+			if(!canvasLabel.isLoaded()) {
+				canvasLabel.loadImage();
+			} else {
+				udpateImage2();
+				
+			}
 			
 		} else {
 			log.info("clearing");
@@ -248,8 +252,8 @@ public class CanvasScreen extends Composite {
 	
 	private void udpateImage2() {
 		
-		width = (int)((double)SCL.getCurrPrimeCanvas().getImgWidth() * zoom);
-		height = (int)((double)SCL.getCurrPrimeCanvas().getImgHeight() * zoom);
+		width = (int)((double)canvasLabel.getImgWidth() * zoom);
+		height = (int)((double)canvasLabel.getImgHeight() * zoom);
 
 		absolutePanel.setPixelSize(width, height);
 
@@ -262,16 +266,20 @@ public class CanvasScreen extends Composite {
 		canvas1.setCoordinateSpaceWidth(width);
 		
 		context0 = canvas0.getContext2d();
-		context0.drawImage(ImageElement.as(SCL.getCurrPrimeCanvas().getImage().getElement()),0,0, width, height);
-
+		context0.drawImage(ImageElement.as(canvasLabel.getImage().getElement()),0,0, width, height);
+		
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
 			public void execute() {
-				SCL.getCurrPrimeCanvas().drawLinks();
+				canvasLabel.drawLinks();
 				SCL.getWaiting().close();
+
 			}
 		});
-		
+
+	}
+	
+	public CanvasLabel getCanvasLabel() {
+		return canvasLabel;
 	}
 
 	private void updateScrollPanel(double x, double y) {

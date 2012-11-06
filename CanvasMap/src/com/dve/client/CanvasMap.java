@@ -5,12 +5,15 @@ import java.util.logging.Logger;
 
 import com.dve.client._views.LoginView;
 import com.dve.client.canvas.dialog.CanvasDialog;
+import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.login.Login;
 import com.dve.client.resource.CanvasResourcePanel;
 import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.client.utilities.FormUtilities;
+import com.dve.client.utilities.ServiceUtilities;
+import com.dve.shared.dto.canvas.DTOCanvases;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -22,6 +25,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -32,9 +36,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class CanvasMap implements EntryPoint {
 	
 	CanvasMap canvasMap;
-	
-	CanvasScreen canvasScreen;
-	CanvasResourcePanel canvasResourcePanel;
 	
 	CanvasDialog canvasDialog;
 	CanvasBreadCrumb breadCrumb;
@@ -113,14 +114,10 @@ public class CanvasMap implements EntryPoint {
 	}
 	
 	private void startUp() {
-		canvasScreen = new CanvasScreen();
-		canvasResourcePanel = new CanvasResourcePanel();
 		canvasDialog = new CanvasDialog();
 		breadCrumb = new CanvasBreadCrumb();
 		
 		SCL.setCanvasDialog(canvasDialog);
-		SCL.setCanvasScreen(canvasScreen);
-		SCL.setCanvasResourcePanel(canvasResourcePanel);
 		SCL.setBreadCrumb(breadCrumb);
 		
 		tabBar.addTab("Map");
@@ -138,22 +135,17 @@ public class CanvasMap implements EntryPoint {
 		mainPanel.add(centerPanel);
 		mainPanel.add(btnPanel);
 		
-		centerPanel.add(canvasScreen);
-		
 		tabBar.addSelectionHandler(new SelectionHandler() {
 			public void onSelection(SelectionEvent event) {
-				if(tabBar.getSelectedTab()==0) {
-					if(centerPanel.getWidget(0)!=canvasScreen) {
+				if(SCL.getCurrPrimeCanvas()!=null) {
+					if(tabBar.getSelectedTab()==0) {
 						centerPanel.clear();
-						centerPanel.add(canvasScreen);
-						canvasScreen.updateImage();
-						
-					}
-				} else if(tabBar.getSelectedTab()==1) {
-					if(SCL.getCurrPrimeCanvas()!=null && centerPanel.getWidget(0)!=canvasResourcePanel) {
+						centerPanel.add(SCL.getCurrPrimeCanvas().getCanvasScreen());
+
+					} else if(tabBar.getSelectedTab()==1) {
 						centerPanel.clear();
-						centerPanel.add(canvasResourcePanel);
-						
+						centerPanel.add(SCL.getCurrPrimeCanvas().getResourcePanel());
+
 					}
 				}
 			}
@@ -161,6 +153,10 @@ public class CanvasMap implements EntryPoint {
 		
 		RootPanel.get().clear();
 		RootPanel.get().add(mainPanel);
+		
+		SCL.getCanvasDialog().center();
+		
+		getRootCanvases();
 		
 	}
 	
@@ -232,6 +228,47 @@ public class CanvasMap implements EntryPoint {
 
 
 	}
+	
+	public void setCanvasScreen(CanvasScreen canvasScreen) {
+		centerPanel.clear();
+		centerPanel.add(canvasScreen);
+		
+	}
+	
+	public void setResourcePanel(CanvasResourcePanel resourcePanel) {
+		centerPanel.clear();
+		centerPanel.add(resourcePanel);
+		
+	}
+	
+	public void getRootCanvases() {
+		AsyncCallback callback = new AsyncCallback() {
+			public void onFailure(Throwable caught) {
+				log.severe(caught.getMessage());
+
+			}
+
+			public void onSuccess(Object result) {
+				log.info("here");
+				centerPanel.clear();
+				CanvasLabel rootLabel = new CanvasLabel(null);
+				SCL.setRootLabel(rootLabel);
+				
+				SCL.setCurrPrimeCanvas(null);
+				SCL.setCurrSecCanvas(null);
+				
+				rootLabel.setDtoCanvases((DTOCanvases) result);
+				
+				SCL.getBreadCrumb().updateRoot();
+				SCL.getCanvasDialog().updateRootCanvas();
+	
+			}
+		};
+
+		ServiceUtilities.getEquipService().getRootCanvases(callback);
+
+	}
+
 
 	public void display() {
 		new Timer(){

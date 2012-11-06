@@ -5,18 +5,13 @@ import gwt.awt.Polygon;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import com.dve.client.canvas.dialog.CanvasLabel;
-
 import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.selector.SCL;
-import com.dve.shared.dto.canvas.DTOCanvas;
 import com.dve.shared.dto.canvas.DTOLink;
 import com.dve.shared.dto.canvas.DTOLinks;
 
 
 public class LinkShape {
-
-	CanvasScreen canvasScreen;
 	
 	String color = "black";
 	int weight = 5;
@@ -33,8 +28,7 @@ public class LinkShape {
 
 	Logger log = Logger.getLogger(LinkShape.class.getName());
 
-	public LinkShape(CanvasScreen canvasScreen) {
-		this.canvasScreen = canvasScreen;
+	public LinkShape() {
 
 	}
 
@@ -112,6 +106,8 @@ public class LinkShape {
 	}
 
 	private void clear() {
+		
+		CanvasScreen canvasScreen = SCL.getCurrPrimeCanvas().getCanvasScreen();
 
 		DTOLink prevP = null;
 		DTOLink currP = null;
@@ -157,6 +153,8 @@ public class LinkShape {
 	}
 
 	public void draw() {
+		
+		CanvasScreen canvasScreen = SCL.getCurrPrimeCanvas().getCanvasScreen();
 
 		DTOLink prevP = null;
 		DTOLink currP = null;
@@ -164,6 +162,7 @@ public class LinkShape {
 
 		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
+			log.info("draw link node");
 			DTOLink p = it.next();
 			prevP = currP;
 
@@ -202,14 +201,14 @@ public class LinkShape {
 	private int getCoord(int coord) {
 		double x = (double)coord;
 //		log.info("getCoord() zoom = " + canvasScreen.zoom);
-		return (int)(x*canvasScreen.zoom);
+		return (int)(x*SCL.getCurrPrimeCanvas().getCanvasScreen().zoom);
 		
 	}
 	
 	private int getRevCoord(int coord) {
 		double x = (double)coord;
 //		log.info("getRevCoord() zoom = " + canvasScreen.zoom);
-		return (int)(x/canvasScreen.zoom);
+		return (int)(x/SCL.getCurrPrimeCanvas().getCanvasScreen().zoom);
 	}
 	
 	public boolean contains(double x, double y) {

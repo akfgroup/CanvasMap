@@ -4,18 +4,17 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.link.LinkShape;
-import com.dve.client.selector.SC;
+import com.dve.client.resource.CanvasResourcePanel;
 import com.dve.client.selector.SCL;
 import com.dve.client.utilities.ServiceUtilities;
 import com.dve.shared.dto.canvas.DTOCanvas;
 import com.dve.shared.dto.canvas.DTOCanvases;
-import com.dve.shared.dto.canvas.DTOLink;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -28,14 +27,16 @@ public class CanvasLabel extends Composite {
 
 	CanvasLabel canvasLabel;
 	DTOCanvas dtoCanvas;
-
-	DTOCanvases dtoCanvases;
-	Vector<CanvasLabel> canvasLabels = new Vector();
 	
 	CanvasLabel parentCanvasLabel;
+	
+	CanvasScreen canvasScreen = new CanvasScreen(this);
+	CanvasResourcePanel resourcePanel = new CanvasResourcePanel();
 
 	Image image = new Image();
 	boolean imgLoaded = false;
+	
+	Vector<CanvasLabel> canvasLabels = new Vector<CanvasLabel>();
 	
 	int imgWidth = -1;
 	int imgHeight = -1;
@@ -51,12 +52,11 @@ public class CanvasLabel extends Composite {
 		this.canvasLabel = this;
 
 		if(dtoCanvas!=null) {
+			
 			if(dtoCanvas.getDtoLinks()!=null) {
-				linkShape = new LinkShape(SCL.getCanvasScreen());
+				linkShape = new LinkShape();
 				linkShape.setDtoLinkNodes(dtoCanvas.getDtoLinks());
-			}
-			if(dtoCanvas.getParentCanvas()!=null) {
-				parentCanvasLabel = new CanvasLabel(dtoCanvas.getParentCanvas());
+				
 			}
 
 			label.setText(dtoCanvas.getId() + " - " + dtoCanvas.getName());
@@ -64,7 +64,9 @@ public class CanvasLabel extends Composite {
 			label.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
 					SCL.getCanvasDialog().setSecCurrCanvas(canvasLabel);
-
+					if(SCL.getCurrPrimeCanvas()!=null) {
+						SCL.getCurrPrimeCanvas().drawLinks();
+					}
 				}
 			});
 
@@ -74,23 +76,6 @@ public class CanvasLabel extends Composite {
 
 				}
 			});
-			
-			if(dtoCanvas.getImageId()!=-1) {
-				image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType()+ "&r=" + Math.random()*100000000);
-				log.info("image url = " + image.getUrl());
-
-				ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
-					public void imageLoaded(ImageLoadEvent event) {
-						if (event.isLoadFailed()) {log.severe("Load Failed!");}
-						else{
-							imgWidth = (int)((double)event.getDimensions().getWidth());
-							imgHeight = (int)((double)event.getDimensions().getHeight());
-							imgLoaded = true;
-
-						}
-					}
-				});
-			}
 			
 		}
 		initWidget(label);
@@ -127,6 +112,22 @@ public class CanvasLabel extends Composite {
 		this.canvasLabels = canvasLabels;
 	}
 	
+	public CanvasScreen getCanvasScreen() {
+		return canvasScreen;
+	}
+
+	public void setCanvasScreen(CanvasScreen canvasScreen) {
+		this.canvasScreen = canvasScreen;
+	}
+
+	public CanvasResourcePanel getResourcePanel() {
+		return resourcePanel;
+	}
+
+	public void setResourcePanel(CanvasResourcePanel resourcePanel) {
+		this.resourcePanel = resourcePanel;
+	}
+
 	public Image getImage() {
 		return image;
 	}
@@ -179,23 +180,17 @@ public class CanvasLabel extends Composite {
 	}
 
 	public void setDtoCanvases(DTOCanvases dtoCanvases) {
-		this.dtoCanvases = dtoCanvases;
 		canvasLabels.clear();
 		if(dtoCanvases!=null) {
 			Iterator<DTOCanvas> it = dtoCanvases.getDTOCanvases().iterator();
 			while(it.hasNext()) {
-				CanvasLabel canvasLabel = new CanvasLabel(it.next());
+				DTOCanvas dtoCanvas = it.next();
+				CanvasLabel canvasLabel = new CanvasLabel(dtoCanvas);
 				canvasLabel.setParentCanvasLabel(this);
 				this.canvasLabels.add(canvasLabel);
 
-
 			}
-		} if(dtoCanvas!=null) {
-			SCL.getCanvasDialog().updatePrimeCanvas();
-		} else {
-			SCL.getCanvasDialog().updateRootCanvas();
-			SCL.getBreadCrumb().updateRoot();
-		}
+		} 
 
 	}
 
@@ -205,6 +200,7 @@ public class CanvasLabel extends Composite {
 			while(it.hasNext()) {
 				CanvasLabel canvasLabel = it.next();
 				if(canvasLabel.getLinkShape()!=null) {
+					log.info("draw link");
 					canvasLabel.getLinkShape().draw();
 				}
 			}
@@ -212,7 +208,7 @@ public class CanvasLabel extends Composite {
 	}
 
 	public void loadImage() {
-		image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType() + "&r=" + Math.random()*100000000);
+		image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
 
 		ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
 			public void imageLoaded(ImageLoadEvent event) {
@@ -221,10 +217,15 @@ public class CanvasLabel extends Composite {
 					imgWidth = (int)((double)event.getDimensions().getWidth());
 					imgHeight = (int)((double)event.getDimensions().getHeight());
 					imgLoaded = true;
-					SCL.getCanvasScreen().updateImage();
+					canvasScreen.updateImage();
 				}
 			}
 		});
+		
+	}
+	
+	public void updateImage() {
+		canvasScreen.updateImage();
 		
 	}
 
@@ -237,12 +238,13 @@ public class CanvasLabel extends Composite {
 
 			public void onSuccess(Object result) {
 				DTOCanvas dtoCanvas = (DTOCanvas) result;
-				SCL.getCanvasResourcePanel().updateResourcePanel();
+				resourcePanel.updateResourcePanel();
 				
 			}
 		};
 		ServiceUtilities.getEquipService().updateCanvas(SCL.getCurrPrimeCanvas().getDtoCanvas(), callback);
 
 	}
+
 
 }

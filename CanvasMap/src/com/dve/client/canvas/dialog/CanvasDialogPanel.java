@@ -3,6 +3,7 @@ package com.dve.client.canvas.dialog;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.client.utilities.ServiceUtilities;
 import com.dve.equip.client.utilities.EquipUtilities;
@@ -101,7 +102,7 @@ public class CanvasDialogPanel extends Composite {
 										SCL.getCanvasDialog().setSecCurrCanvas(SCL.getCurrPrimeCanvas().getParentCanvasLabel());
 
 									} else {
-										getRootCanvases();
+										SC.getCanvasMap().getRootCanvases();
 
 									}
 								}
@@ -127,35 +128,6 @@ public class CanvasDialogPanel extends Composite {
 		
 	}
 	
-	public void getRootCanvases() {
-		AsyncCallback callback = new AsyncCallback() {
-			public void onFailure(Throwable caught) {
-				log.severe(caught.getMessage());
-
-			}
-
-			public void onSuccess(Object result) {
-				log.info("here");
-				CanvasLabel rootLabel = new CanvasLabel(null);
-				SCL.setRootLabel(rootLabel);
-				
-				SCL.setCurrPrimeCanvas(null);
-				SCL.setCurrSecCanvas(null);
-				
-				rootLabel.setDtoCanvases((DTOCanvases) result);
-				
-				SCL.getCanvasDialog().nonModalDialog.setText("Canvas - Roots");
-				SCL.getBreadCrumb().updateRoot();
-				SCL.getCanvasScreen().updateImage();
-				SCL.getCanvasResourcePanel().updateResourcePanel();
-			
-			}
-		};
-
-		ServiceUtilities.getEquipService().getRootCanvases(callback);
-
-	}
-
 	public FlexTable getCanvasTable() {
 		return canvasTable;
 		
