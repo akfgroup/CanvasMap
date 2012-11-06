@@ -176,7 +176,7 @@ public class CanvasDialog {
 					
 					SCL.getCurrPrimeCanvas().getDtoCanvas().setImageId(Integer.parseInt(id));
 					SCL.getCurrPrimeCanvas().getDtoCanvas().setImageType(type);
-					SCL.getCurrPrimeCanvas().loadImage();
+					SCL.getCurrPrimeCanvas().updateImage();
 
 				} else {
 					log.severe("Error in singleUploader.onFinishUploadHandler()! " + uploader.getStatus());

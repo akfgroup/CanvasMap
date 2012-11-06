@@ -32,14 +32,8 @@ public class CanvasLabel extends Composite {
 	
 	CanvasScreen canvasScreen = new CanvasScreen(this);
 	CanvasResourcePanel resourcePanel = new CanvasResourcePanel();
-
-	Image image = new Image();
-	boolean imgLoaded = false;
 	
 	Vector<CanvasLabel> canvasLabels = new Vector<CanvasLabel>();
-	
-	int imgWidth = -1;
-	int imgHeight = -1;
 	
 	LinkShape linkShape;
 
@@ -128,35 +122,6 @@ public class CanvasLabel extends Composite {
 		this.resourcePanel = resourcePanel;
 	}
 
-	public Image getImage() {
-		return image;
-	}
-	
-	public void setLoaded(boolean imgLoaded) {
-		this.imgLoaded = imgLoaded;
-		
-	}
-
-	public boolean isLoaded() {
-		return imgLoaded;
-	}
-	
-	public int getImgWidth() {
-		return imgWidth;
-	}
-
-	public void setImgWidth(int imgWidth) {
-		this.imgWidth = imgWidth;
-	}
-
-	public int getImgHeight() {
-		return imgHeight;
-	}
-
-	public void setImgHeight(int imgHeight) {
-		this.imgHeight = imgHeight;
-	}
-
 	public void highlight() {
 		label.getElement().getStyle().setBackgroundColor("yellow");
 
@@ -207,23 +172,6 @@ public class CanvasLabel extends Composite {
 		}
 	}
 
-	public void loadImage() {
-		image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
-
-		ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
-			public void imageLoaded(ImageLoadEvent event) {
-				if (event.isLoadFailed()) {log.severe("Load Failed!");}
-				else{
-					imgWidth = (int)((double)event.getDimensions().getWidth());
-					imgHeight = (int)((double)event.getDimensions().getHeight());
-					imgLoaded = true;
-					canvasScreen.updateImage();
-				}
-			}
-		});
-		
-	}
-	
 	public void updateImage() {
 		canvasScreen.updateImage();
 		

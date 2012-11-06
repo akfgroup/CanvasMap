@@ -1,6 +1,7 @@
 package com.dve.client.canvas.screen;
 
 import gwt.g2d.client.graphics.ImageLoader;
+import gwt.g2d.client.graphics.ImageLoader.CallBack;
 
 import java.util.logging.Logger;
 
@@ -31,7 +32,12 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
+import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
+import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 
 
 public class CanvasScreen extends Composite {
@@ -51,9 +57,15 @@ public class CanvasScreen extends Composite {
 
 	public int spacing = 1;
 	public double zoom = 1.0;
+	
+	double xscale, yscale;
 
+	VerticalPanel vertPanel = new VerticalPanel();
+	
 	AbsolutePanel absolutePanel = new AbsolutePanel();
-
+	VerticalPanel imgPanel = new VerticalPanel();
+	ImageElement imageElement;
+	
 	int width, height;
 
 	Logger log = Logger.getLogger(CanvasScreen.class.getName());
@@ -166,36 +178,31 @@ public class CanvasScreen extends Composite {
 
 		canvas1.addMouseWheelHandler(new MouseWheelHandler() {
 			public void onMouseWheel(MouseWheelEvent event) {
-				
-				int x = event.getRelativeX(canvas1.getElement());
-				int y = event.getRelativeY(canvas1.getElement());
-				
-				int osx = scrollPanel.getHorizontalScrollPosition();
-				int osy = scrollPanel.getVerticalScrollPosition();
-				
-				int nsx = osx;
-				int nsy = osy;
+				event.preventDefault();
 				
 				if(event.isNorth()) {
 					zoom = zoom + .1;
-					nsx = nsx + (int)((double)nsx*.1) + (int)(Math.abs(x-Window.getClientWidth()/2)*.1);
-					nsy = nsy + (int)((double)nsy*.1) + (int)(Math.abs(y-Window.getClientHeight()/2)*.1);
-				} else if(event.isSouth()) {
+				} else {
 					zoom = zoom - .1;
-					nsx = nsx - (int)((double)nsx*.1) - (int)(Math.abs(x-Window.getClientWidth()/2)*.1);
-					nsy = nsy - (int)((double)nsy*.1) - (int)(Math.abs(x-Window.getClientWidth()/2)*.1);
 				}
-
+				
+				xscale = (double)scrollPanel.getHorizontalScrollPosition()/(double)scrollPanel.getMaximumHorizontalScrollPosition();
+				yscale = (double)scrollPanel.getVerticalScrollPosition()/(double)scrollPanel.getMaximumVerticalScrollPosition();
+				
 				updateImage();
 			}
 
 		});
+		
+		vertPanel.add(absolutePanel);
+		vertPanel.add(imgPanel);
+		imgPanel.setVisible(false);
 
 		absolutePanel.add(canvas0,0,0);
 		absolutePanel.add(canvas1,0,0);
 
 		scrollPanel.setPixelSize(Window.getClientWidth()-(int)(Window.getClientWidth()*.05), Window.getClientHeight()-(int)(Window.getClientHeight()*.05));
-		scrollPanel.setWidget(absolutePanel);
+		scrollPanel.setWidget(vertPanel);
 
 		initWidget(scrollPanel);
 
@@ -230,8 +237,27 @@ public class CanvasScreen extends Composite {
 		
 		if(canvasLabel.getDtoCanvas().getImageId()!=-1) {
 			SCL.getWaiting().show();
-			if(!canvasLabel.isLoaded()) {
-				canvasLabel.loadImage();
+			if(imageElement==null) {
+				imgPanel.clear();
+				
+				Image image = new Image();
+				image.setUrl("getImage?nimage=" + canvasLabel.getDtoCanvas().getImageId() + "." + canvasLabel.getDtoCanvas().getImageType());
+				log.info("Url = " + image.getUrl());
+				
+				ImageLoader.loadImages(image.getUrl(), new CallBack() {
+					public void onImagesLoaded(ImageElement[] imageElements) {
+						log.info("processing imageElement");
+						
+						imageElement = imageElements[0];
+						
+//						imgPanel.getElement().appendChild(imageElement);
+						
+						udpateImage2();
+						
+					}
+				});
+				
+				
 			} else {
 				udpateImage2();
 				
@@ -251,9 +277,12 @@ public class CanvasScreen extends Composite {
 	}
 	
 	private void udpateImage2() {
-		
-		width = (int)((double)canvasLabel.getImgWidth() * zoom);
-		height = (int)((double)canvasLabel.getImgHeight() * zoom);
+
+		int imgWidth = (int)((double)imageElement.getWidth());
+		int imgHeight = (int)((double)imageElement.getHeight());
+
+		width = (int)((double)imgWidth * zoom);
+		height = (int)((double)imgHeight * zoom);
 
 		absolutePanel.setPixelSize(width, height);
 
@@ -264,10 +293,16 @@ public class CanvasScreen extends Composite {
 		canvas1.setPixelSize(width, height);
 		canvas1.setCoordinateSpaceHeight(height);
 		canvas1.setCoordinateSpaceWidth(width);
-		
+
 		context0 = canvas0.getContext2d();
-		context0.drawImage(ImageElement.as(canvasLabel.getImage().getElement()),0,0, width, height);
+		context0.drawImage(imageElement,0,0, width, height);
 		
+		int hpos = (int)((double)scrollPanel.getMaximumHorizontalScrollPosition()*xscale);
+		int vpos = (int)((double)scrollPanel.getMaximumVerticalScrollPosition()*yscale);
+		
+		scrollPanel.setHorizontalScrollPosition(hpos);
+		scrollPanel.setVerticalScrollPosition(vpos);
+
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			public void execute() {
 				canvasLabel.drawLinks();
@@ -276,31 +311,12 @@ public class CanvasScreen extends Composite {
 			}
 		});
 
+
 	}
 	
 	public CanvasLabel getCanvasLabel() {
 		return canvasLabel;
 	}
 
-	private void updateScrollPanel(double x, double y) {
-
-		log.info("horizPos = " + x);
-		log.info("vertPos = " + y);
-
-		log.info("maxHoriz = " + scrollPanel.getMaximumHorizontalScrollPosition());
-		log.info("maxVert = " + scrollPanel.getMaximumVerticalScrollPosition());
-		log.info("canvasHoriz = " + canvas1.getCoordinateSpaceWidth());
-		log.info("canvasVert = " + canvas1.getCoordinateSpaceHeight());
-
-		int hPos = (int)(x*scrollPanel.getMaximumHorizontalScrollPosition());
-		int vPos = (int)(y*scrollPanel.getMaximumVerticalScrollPosition());
-
-		log.info("set Horiz = " + hPos);
-		log.info("Set Vert = " + vPos);
-
-		scrollPanel.setHorizontalScrollPosition(hPos);
-		scrollPanel.setVerticalScrollPosition(vPos);
-
-	}
 
 }
