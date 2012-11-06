@@ -200,9 +200,9 @@ public class CanvasScreen extends Composite {
 	}
 
 	public int roundIt(int x) {
-		x = x + (spacing/2); // add 5 (half of 10), x now equals 132
-		x = x / spacing; // divide by 10, yielding 13 (division of ints throws away the decimal part)
-		x = x * spacing; // multiply by 10, giving you 130
+//		x = x + (spacing/2); // add 5 (half of 10), x now equals 132
+//		x = x / spacing; // divide by 10, yielding 13 (division of ints throws away the decimal part)
+//		x = x * spacing; // multiply by 10, giving you 130
 
 		return x;
 
@@ -230,13 +230,8 @@ public class CanvasScreen extends Composite {
 		
 		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId()!=-1) {
 			SCL.getWaiting().show();
-			
-			if(!SCL.getCurrPrimeCanvas().isLoaded()) {
-				SCL.getCurrPrimeCanvas().loadImage();
-			} else {
-				udpateImage2();
-			}
-
+		
+			udpateImage2();
 			
 		} else {
 			log.info("clearing");
@@ -244,7 +239,11 @@ public class CanvasScreen extends Composite {
 			context1.clearRect(0,0,canvas1.getCoordinateSpaceWidth(),canvas1.getCoordinateSpaceHeight());
 
 		}
-		SCL.getCanvasDialog().getZoomLA().setText("Zoom = " + zoom);
+		String zoomLA = Double.toString(zoom);
+		if(zoomLA.length()>4) {
+			zoomLA = zoomLA.substring(0,3);
+		}
+		SCL.getCanvasDialog().getZoomLA().setText("Zoom = " + zoomLA);
 	}
 	
 	private void udpateImage2() {
@@ -261,7 +260,7 @@ public class CanvasScreen extends Composite {
 		canvas1.setPixelSize(width, height);
 		canvas1.setCoordinateSpaceHeight(height);
 		canvas1.setCoordinateSpaceWidth(width);
-
+		
 		context0 = canvas0.getContext2d();
 		context0.drawImage(ImageElement.as(SCL.getCurrPrimeCanvas().getImage().getElement()),0,0, width, height);
 

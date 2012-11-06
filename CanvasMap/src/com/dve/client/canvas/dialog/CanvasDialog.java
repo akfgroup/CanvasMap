@@ -258,12 +258,7 @@ public class CanvasDialog {
 					SCL.getCanvasResourcePanel().updateResourcePanel();
 					linkPanel.updateLinks();
 					
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-						@Override
-						public void execute() {
-							SCL.getCanvasScreen().updateImage();
-						}
-					});
+					SCL.getCanvasScreen().updateImage();
 					
 				}
 			};

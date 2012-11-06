@@ -76,7 +76,7 @@ public class CanvasLabel extends Composite {
 			});
 			
 			if(dtoCanvas.getImageId()!=-1) {
-				image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
+				image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType()+ "&r=" + Math.random()*100000000);
 				log.info("image url = " + image.getUrl());
 
 				ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
@@ -129,6 +129,11 @@ public class CanvasLabel extends Composite {
 	
 	public Image getImage() {
 		return image;
+	}
+	
+	public void setLoaded(boolean imgLoaded) {
+		this.imgLoaded = imgLoaded;
+		
 	}
 
 	public boolean isLoaded() {
@@ -207,7 +212,7 @@ public class CanvasLabel extends Composite {
 	}
 
 	public void loadImage() {
-		image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType());
+		image.setUrl("getImage?nimage=" + dtoCanvas.getImageId() + "." + dtoCanvas.getImageType() + "&r=" + Math.random()*100000000);
 
 		ImagePreloader.load(image.getUrl(), new ImageLoadHandler() {
 			public void imageLoaded(ImageLoadEvent event) {
