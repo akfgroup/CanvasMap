@@ -258,6 +258,7 @@ public class CanvasScreen extends Composite {
 		log.info("UpdateImage");
 		
 		if(canvasLabel.getDtoCanvas().getImageId()!=-1) {
+			
 			SCL.getWaiting().show();
 			if(imageElement==null) {
 				imgPanel.clear();

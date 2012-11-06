@@ -215,6 +215,7 @@ public class CanvasDialog {
 		SCL.setCurrPrimeCanvas(canvasLabel);
 		
 		if(SCL.getCurrPrimeCanvas()!=null) {
+			SCL.getCurrPrimeCanvas().updateImage();
 			Vector<String> canvasLabels = new Vector<String>();
 			canvasLabels.add(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 
@@ -254,8 +255,6 @@ public class CanvasDialog {
 					
 					updatePrimeCanvas();
 					SC.getCanvasMap().setCanvasScreen(SCL.getCurrPrimeCanvas().getCanvasScreen());
-					
-					SCL.getCurrPrimeCanvas().updateImage();
 			
 				}
 			};
