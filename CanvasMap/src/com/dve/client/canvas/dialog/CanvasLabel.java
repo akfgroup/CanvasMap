@@ -194,5 +194,19 @@ public class CanvasLabel extends Composite {
 
 	}
 
+	public void unhighlightLink() {
+		if(linkShape!=null) {
+			linkShape.unhighlight();
+		}
+		
+	}
+
+	public void highlighLink() {
+		if(linkShape!=null) {
+			linkShape.highlight();
+		}
+		
+	}
+
 
 }

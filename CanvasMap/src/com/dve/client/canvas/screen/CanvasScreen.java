@@ -44,6 +44,9 @@ public class CanvasScreen extends Composite {
 
 	CanvasScreen canvasScreen;
 	CanvasLabel canvasLabel;
+	
+	CanvasLabel currLabel;
+	CanvasLabel prevLabel;
 
 	ScrollPanel scrollPanel = new ScrollPanel();
 	
@@ -108,7 +111,7 @@ public class CanvasScreen extends Composite {
 
 				} else {
 					DOM.setStyleAttribute(scrollPanel.getElement(), "cursor", "pointer");
-
+					
 				}
 			}
 		});
@@ -156,6 +159,25 @@ public class CanvasScreen extends Composite {
 					}
 					mouseDnX = event.getClientX();
 					mouseDnY = event.getClientY();
+				}
+				if(!SCL.getCanvasDialog().isEdit()) {
+					int x = event.getRelativeX(canvas0.getCanvasElement());
+					int y = event.getRelativeY(canvas0.getCanvasElement());
+
+					if(SCL.getCurrPrimeCanvas()!=null) {
+						prevLabel = currLabel;
+						currLabel = null;
+						CanvasLabel temp = canvasLabel.contains(x, y);
+						if(temp!=null) {
+							currLabel = temp;
+						}
+						if(prevLabel!=null) {
+							prevLabel.unhighlightLink();
+						}
+						if(currLabel!=null) {
+							currLabel.highlighLink();
+						}
+					} 
 				}
 			}
 		});
