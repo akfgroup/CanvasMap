@@ -96,9 +96,7 @@ public class CanvasScreen extends Composite {
 					DOM.setStyleAttribute(scrollPanel.getElement(), "cursor", "pointer");
 
 				}
-
 			}
-
 		});
 
 		canvas1.addMouseDownHandler(new MouseDownHandler() {
@@ -229,41 +227,16 @@ public class CanvasScreen extends Composite {
 
 	public void updateImage() {
 		log.info("UpdateImage");
-		Timer t = new Timer() {
-			@Override
-			public void run() {
-			}
-			
-		};
-		t.schedule(100);
 		
 		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getImageId()!=-1) {
-
 			SCL.getWaiting().show();
 			
-			width = (int)((double)SCL.getCurrPrimeCanvas().getImgWidth() * zoom);
-			height = (int)((double)SCL.getCurrPrimeCanvas().getImgHeight() * zoom);
+			if(!SCL.getCurrPrimeCanvas().isLoaded()) {
+				SCL.getCurrPrimeCanvas().loadImage();
+			} else {
+				udpateImage2();
+			}
 
-			absolutePanel.setPixelSize(width, height);
-
-			canvas0.setPixelSize(width, height);
-			canvas0.setCoordinateSpaceHeight(height);
-			canvas0.setCoordinateSpaceWidth(width);
-
-			canvas1.setPixelSize(width, height);
-			canvas1.setCoordinateSpaceHeight(height);
-			canvas1.setCoordinateSpaceWidth(width);
-
-			context0 = canvas0.getContext2d();
-			context0.drawImage(ImageElement.as(SCL.getCurrPrimeCanvas().getImage().getElement()),0,0, width, height);
-
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					SCL.getCurrPrimeCanvas().drawLinks();
-					SCL.getWaiting().close();
-				}
-			});
 			
 		} else {
 			log.info("clearing");
@@ -272,6 +245,34 @@ public class CanvasScreen extends Composite {
 
 		}
 		SCL.getCanvasDialog().getZoomLA().setText("Zoom = " + zoom);
+	}
+	
+	private void udpateImage2() {
+		
+		width = (int)((double)SCL.getCurrPrimeCanvas().getImgWidth() * zoom);
+		height = (int)((double)SCL.getCurrPrimeCanvas().getImgHeight() * zoom);
+
+		absolutePanel.setPixelSize(width, height);
+
+		canvas0.setPixelSize(width, height);
+		canvas0.setCoordinateSpaceHeight(height);
+		canvas0.setCoordinateSpaceWidth(width);
+
+		canvas1.setPixelSize(width, height);
+		canvas1.setCoordinateSpaceHeight(height);
+		canvas1.setCoordinateSpaceWidth(width);
+
+		context0 = canvas0.getContext2d();
+		context0.drawImage(ImageElement.as(SCL.getCurrPrimeCanvas().getImage().getElement()),0,0, width, height);
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				SCL.getCurrPrimeCanvas().drawLinks();
+				SCL.getWaiting().close();
+			}
+		});
+		
 	}
 
 	private void updateScrollPanel(double x, double y) {

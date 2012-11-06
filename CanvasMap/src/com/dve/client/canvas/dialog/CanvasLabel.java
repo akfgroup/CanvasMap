@@ -35,6 +35,8 @@ public class CanvasLabel extends Composite {
 	CanvasLabel parentCanvasLabel;
 
 	Image image = new Image();
+	boolean imgLoaded = false;
+	
 	int imgWidth = -1;
 	int imgHeight = -1;
 	
@@ -83,6 +85,7 @@ public class CanvasLabel extends Composite {
 						else{
 							imgWidth = (int)((double)event.getDimensions().getWidth());
 							imgHeight = (int)((double)event.getDimensions().getHeight());
+							imgLoaded = true;
 
 						}
 					}
@@ -128,8 +131,8 @@ public class CanvasLabel extends Composite {
 		return image;
 	}
 
-	public void setImage(Image image) {
-		this.image = image;
+	public boolean isLoaded() {
+		return imgLoaded;
 	}
 	
 	public int getImgWidth() {
@@ -212,6 +215,7 @@ public class CanvasLabel extends Composite {
 				else{
 					imgWidth = (int)((double)event.getDimensions().getWidth());
 					imgHeight = (int)((double)event.getDimensions().getHeight());
+					imgLoaded = true;
 					SCL.getCanvasScreen().updateImage();
 				}
 			}

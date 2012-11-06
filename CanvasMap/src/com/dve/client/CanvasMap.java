@@ -162,8 +162,6 @@ public class CanvasMap implements EntryPoint {
 		RootPanel.get().clear();
 		RootPanel.get().add(mainPanel);
 		
-		SCL.getCanvasDialog().center();
-		
 	}
 	
 	private String buildStackTrace(Throwable t, String log) {
