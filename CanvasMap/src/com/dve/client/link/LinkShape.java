@@ -154,24 +154,32 @@ public class LinkShape {
 	public void draw(boolean highlight) {
 		if(dtoLinks!=null && dtoLinks.getDTOLinks().size()>0) {
 			CanvasScreen canvasScreen = SCL.getCurrPrimeCanvas().getCanvasScreen();
+			Iterator<DTOLink> it;
+			if(SCL.getCanvasDialog().isEdit()) {
+				it = dtoLinks.getDTOLinks().iterator();
+				while(it.hasNext()) {
+					DTOLink p = it.next();
+					canvasScreen.context1.setFillStyle(color);
+					canvasScreen.context1.beginPath();
+					canvasScreen.context1.arc(getCoord(p.getX()), getCoord(p.getY()), nodeRadius, 0, Math.PI * 2.0, true);
+					canvasScreen.context1.closePath();
+					canvasScreen.context1.fill();
 
-			Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
-			while(it.hasNext()) {
-				DTOLink p = it.next();
-				canvasScreen.context1.setFillStyle(color);
-				canvasScreen.context1.beginPath();
-				canvasScreen.context1.arc(getCoord(p.getX()), getCoord(p.getY()), nodeRadius, 0, Math.PI * 2.0, true);
-				canvasScreen.context1.closePath();
-				canvasScreen.context1.fill();
-
+				}
 			}
 
 			//		log.severe("Resetting Polygon!");
 			polygon = new Polygon();
 
-
-			canvasScreen.context1.setLineWidth(2);
-			canvasScreen.context1.setStrokeStyle(color);
+			if(SCL.getCanvasDialog().isEdit()) {
+				canvasScreen.context1.setLineWidth(2);
+				canvasScreen.context1.setStrokeStyle(color);
+				
+			} else {
+				canvasScreen.context1.setLineWidth(1);
+				canvasScreen.context1.setStrokeStyle("gray");
+				
+			}
 			canvasScreen.context1.beginPath();
 			it = dtoLinks.getDTOLinks().iterator();
 			DTOLink p = it.next();
