@@ -35,9 +35,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
-import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
-import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 
 
 public class CanvasScreen extends Composite {
@@ -163,7 +160,7 @@ public class CanvasScreen extends Composite {
 				if(!SCL.getCanvasDialog().isEdit()) {
 					int x = event.getRelativeX(canvas0.getCanvasElement());
 					int y = event.getRelativeY(canvas0.getCanvasElement());
-
+					
 					if(SCL.getCurrPrimeCanvas()!=null) {
 						prevLabel = currLabel;
 						CanvasLabel temp = canvasLabel.contains(x, y);

@@ -121,7 +121,7 @@ public class CanvasLabel extends Composite {
 	public void setResourcePanel(CanvasResourcePanel resourcePanel) {
 		this.resourcePanel = resourcePanel;
 	}
-
+	
 	public void highlight() {
 		label.getElement().getStyle().setBackgroundColor("yellow");
 
@@ -167,7 +167,7 @@ public class CanvasLabel extends Composite {
 				CanvasLabel canvasLabel = it.next();
 				if(canvasLabel.getLinkShape()!=null) {
 //					log.info("draw link");
-					canvasLabel.getLinkShape().draw();
+					canvasLabel.getLinkShape().draw(false);
 				}
 			}
 		}
