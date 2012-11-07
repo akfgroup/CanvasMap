@@ -176,6 +176,7 @@ public class LinkShape {
 			it = dtoLinks.getDTOLinks().iterator();
 			DTOLink p = it.next();
 			canvasScreen.context1.moveTo(getCoord(p.getX()),getCoord(p.getY()));
+			polygon.addPoint(getCoord(p.getX()), getCoord(p.getY()));
 			while(it.hasNext()) {
 				p = it.next();
 
