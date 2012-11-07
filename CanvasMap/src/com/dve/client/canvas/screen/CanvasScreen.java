@@ -166,16 +166,17 @@ public class CanvasScreen extends Composite {
 
 					if(SCL.getCurrPrimeCanvas()!=null) {
 						prevLabel = currLabel;
-						currLabel = null;
 						CanvasLabel temp = canvasLabel.contains(x, y);
-						if(temp!=null) {
+						if(temp!=null && temp!=currLabel) {
 							currLabel = temp;
-						}
-						if(prevLabel!=null) {
-							prevLabel.unhighlightLink();
-						}
-						if(currLabel!=null) {
 							currLabel.highlighLink();
+						} else if(temp==null && currLabel!=null) {
+							currLabel.unhighlight();
+							currLabel=null;
+						}
+						if(prevLabel!=null && prevLabel!=currLabel) {
+							prevLabel.unhighlightLink();
+							prevLabel=null;
 						}
 					} 
 				}
@@ -203,9 +204,12 @@ public class CanvasScreen extends Composite {
 				event.preventDefault();
 				
 				if(event.isNorth()) {
+					if(zoom<10)
 					zoom = zoom + .1;
-				} else {
-					zoom = zoom - .1;
+				} else if(event.isSouth()) {
+					if(zoom>=.2) {
+						zoom = zoom - .1;
+					}
 				}
 				
 				xscale = (double)scrollPanel.getHorizontalScrollPosition()/(double)scrollPanel.getMaximumHorizontalScrollPosition();
@@ -261,7 +265,6 @@ public class CanvasScreen extends Composite {
 			
 			SCL.getWaiting().show();
 			if(imageElement==null) {
-				imgPanel.clear();
 				
 				Image image = new Image();
 				image.setUrl("getImage?nimage=" + canvasLabel.getDtoCanvas().getImageId() + "." + canvasLabel.getDtoCanvas().getImageType());

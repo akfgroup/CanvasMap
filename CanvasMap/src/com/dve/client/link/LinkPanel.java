@@ -64,8 +64,6 @@ public class LinkPanel extends Composite {
 	}
 	
 	public void addLink() {
-//		LinkShape linkShape = new LinkShape(linkPanel, scrollPanel.getHorizontalScrollPosition()+(scrollPanel.getOffsetWidth()/2), scrollPanel.getVerticalScrollPosition()+(scrollPanel.getOffsetHeight()/2));
-//		SCL.getLinkDialog().addLinkShape(linkShape);
 		
 	}
 
@@ -77,9 +75,6 @@ public class LinkPanel extends Composite {
 	public void updateLinks() {
 		linkTable.removeAllRows();
 		if(SCL.getCurrSecCanvas()!=null && SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks()!=null) {
-			LinkShape linkShape = new LinkShape();
-			linkShape.setDtoLinkNodes(SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks());
-			SCL.getCurrSecCanvas().setLinkShape(linkShape);
 			Iterator<DTOLink> it = SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks().getDTOLinks().iterator();
 			while(it.hasNext()) {
 				DTOLink dtoLink = it.next();

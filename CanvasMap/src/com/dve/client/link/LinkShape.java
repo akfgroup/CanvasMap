@@ -84,17 +84,17 @@ public class LinkShape {
 			log.severe("nodeDn == null");
 		}
 		if(moving) {
-			log.severe("moving!");
+//			log.severe("moving!");
 		}
 		if(dtoLink!=null && !moving) {
-			log.info("x,y = " + x + ", " + y);
-			log.info("x = " + x);
-			log.info("dtoLink.x = " + getCoord(dtoLink.getX()));
-			log.info("y = " + getRevCoord(y));
-			log.info("dtoLink.y = " + getCoord(dtoLink.getY()));
-			log.info("nodeUp 2! value = " + (Math.pow(x-getCoord(dtoLink.getX()),2) + Math.pow(y-getCoord(dtoLink.getY()),2)) + ", nodeRadius = " + nodeRadius + " nodeRadius^2 = " + (Math.pow(nodeRadius,2)));
+//			log.info("x,y = " + x + ", " + y);
+//			log.info("x = " + x);
+//			log.info("dtoLink.x = " + getCoord(dtoLink.getX()));
+//			log.info("y = " + getRevCoord(y));
+//			log.info("dtoLink.y = " + getCoord(dtoLink.getY()));
+//			log.info("nodeUp 2! value = " + (Math.pow(x-getCoord(dtoLink.getX()),2) + Math.pow(y-getCoord(dtoLink.getY()),2)) + ", nodeRadius = " + nodeRadius + " nodeRadius^2 = " + (Math.pow(nodeRadius,2)));
 			if(Math.pow(x-getCoord(dtoLink.getX()),2) + Math.pow(y-getCoord(dtoLink.getY()),2) <= Math.pow(nodeRadius,2)) {
-				log.info("nodeUp 2-a!");
+//				log.info("nodeUp 2-a!");
 				clear();
 				dtoLinks.getDTOLinks().remove(dtoLink);
 				draw();			
@@ -158,11 +158,13 @@ public class LinkShape {
 
 		DTOLink prevP = null;
 		DTOLink currP = null;
-		polygon.reset();
+		
+		log.severe("Resetting Polygon!");
+		polygon = new Polygon();
 
 		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
 		while(it.hasNext()) {
-			log.info("draw link node");
+//			log.info("draw link node");
 			DTOLink p = it.next();
 			prevP = currP;
 
@@ -181,6 +183,7 @@ public class LinkShape {
 				canvasScreen.context1.stroke();
 			}
 
+			log.info("Adding poly point = " + getCoord(p.getX()) + ", " + getCoord(p.getY()));
 			polygon.addPoint(getCoord(p.getX()), getCoord(p.getY()));
 			currP = p;
 
@@ -200,7 +203,7 @@ public class LinkShape {
 	
 	private int getCoord(int coord) {
 		double x = (double)coord;
-//		log.info("getCoord() zoom = " + canvasScreen.zoom);
+//		log.info("getCoord() zoom = " + SCL.getCurrPrimeCanvas().getCanvasScreen().zoom);
 		return (int)(x*SCL.getCurrPrimeCanvas().getCanvasScreen().zoom);
 		
 	}
@@ -212,6 +215,9 @@ public class LinkShape {
 	}
 	
 	public boolean contains(double x, double y) {
+//		log.info("polygon.height = " + polygon.getBounds().height);
+//		log.info("polygon.width = " + polygon.getBounds().width);
+		
 		if(polygon.contains(x,y)) {
 			return true;
 		}

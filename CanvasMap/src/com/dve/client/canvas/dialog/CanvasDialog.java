@@ -216,27 +216,8 @@ public class CanvasDialog {
 		
 		if(SCL.getCurrPrimeCanvas()!=null) {
 			SCL.getCurrPrimeCanvas().updateImage();
-			Vector<String> canvasLabels = new Vector<String>();
-			canvasLabels.add(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
-
-			DTOCanvas tempCanvas = SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas();;
-			boolean valid = true;
-			while(valid) {
-				if(tempCanvas==null) {
-					valid = false;
-				} else {
-					canvasLabels.add(tempCanvas.getId() + " - " + tempCanvas.getName());
-					tempCanvas = tempCanvas.getParentCanvas();
-				}
-			}
 			
-			String label = "Canvas ";
-			for(int i=canvasLabels.size()-1;i>=0; i--) {
-				label = label + " - " + canvasLabels.get(i);
-			}
-			
-			nonModalDialog.setText(label);
-			canvasNameLabel.update();
+			updateTitle();
 			
 			SCL.getCurrPrimeCanvas().highlight();
 			
@@ -249,11 +230,13 @@ public class CanvasDialog {
 				public void onSuccess(Object result) {
 					DTOCanvases dtoCanvases = (DTOCanvases) result;
 					SCL.getCurrPrimeCanvas().setDtoCanvases(dtoCanvases);
+					SCL.getCurrPrimeCanvas().drawLinks();
 					
 					SCL.getBreadCrumb().openCanvas();
 					SCL.getCurrPrimeCanvas().getResourcePanel().updateResourcePanel();
 					
-					updatePrimeCanvas();
+					updateCanvasPanel();
+					
 					SC.getCanvasMap().setCanvasScreen(SCL.getCurrPrimeCanvas().getCanvasScreen());
 			
 				}
@@ -268,6 +251,31 @@ public class CanvasDialog {
 		
 	}
 	
+	private void updateTitle() {
+		Vector<String> canvasLabels = new Vector<String>();
+		canvasLabels.add(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
+
+		DTOCanvas tempCanvas = SCL.getCurrPrimeCanvas().getDtoCanvas().getParentCanvas();;
+		boolean valid = true;
+		while(valid) {
+			if(tempCanvas==null) {
+				valid = false;
+			} else {
+				canvasLabels.add(tempCanvas.getId() + " - " + tempCanvas.getName());
+				tempCanvas = tempCanvas.getParentCanvas();
+			}
+		}
+		
+		String label = "Canvas ";
+		for(int i=canvasLabels.size()-1;i>=0; i--) {
+			label = label + " - " + canvasLabels.get(i);
+		}
+		
+		nonModalDialog.setText(label);
+		canvasNameLabel.update();
+		
+	}
+
 	public void updateRootCanvas() {
 		canvasPanel.getCanvasTable().removeAllRows();
 		Iterator<CanvasLabel> it = SCL.getRootLabel().getCanvasLabels().iterator();
@@ -279,7 +287,7 @@ public class CanvasDialog {
 		linkPanel.updateLinks();
 	}
 	
-	public void updatePrimeCanvas() {
+	public void updateCanvasPanel() {
 		canvasPanel.getCanvasTable().removeAllRows();
 		Iterator<CanvasLabel> it = SCL.getCurrPrimeCanvas().getCanvasLabels().iterator();
 		while(it.hasNext()) {

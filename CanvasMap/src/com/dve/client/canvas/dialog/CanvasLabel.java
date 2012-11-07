@@ -133,6 +133,7 @@ public class CanvasLabel extends Composite {
 	}
 
 	public CanvasLabel contains(double x, double y) {
+//		log.info("# Canvas Labels = " + canvasLabels.size());
 		Iterator<CanvasLabel> it = canvasLabels.iterator();
 		while(it.hasNext()) {
 			CanvasLabel temp = it.next();
@@ -150,9 +151,9 @@ public class CanvasLabel extends Composite {
 			Iterator<DTOCanvas> it = dtoCanvases.getDTOCanvases().iterator();
 			while(it.hasNext()) {
 				DTOCanvas dtoCanvas = it.next();
-				CanvasLabel canvasLabel = new CanvasLabel(dtoCanvas);
-				canvasLabel.setParentCanvasLabel(this);
-				this.canvasLabels.add(canvasLabel);
+				CanvasLabel temp = new CanvasLabel(dtoCanvas);
+				temp.setParentCanvasLabel(canvasLabel);
+				this.canvasLabels.add(temp);
 
 			}
 		} 
@@ -165,7 +166,7 @@ public class CanvasLabel extends Composite {
 			while(it.hasNext()) {
 				CanvasLabel canvasLabel = it.next();
 				if(canvasLabel.getLinkShape()!=null) {
-					log.info("draw link");
+//					log.info("draw link");
 					canvasLabel.getLinkShape().draw();
 				}
 			}
