@@ -22,12 +22,9 @@ import com.dve.shared.dto.canvas.DTOCanvases;
 import com.dve.shared.dto.canvas.DTOLinks;
 import com.dve.shared.dto.project.DTOProject;
 import com.dve.shared.dto.project.DTOProjects;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -361,11 +358,11 @@ public class CanvasDialog {
 
 			public void onSuccess(Object result) {
 				DTOLinks dtoLinks = (DTOLinks) result;
-				SCL.getCurrSecCanvas().getDtoCanvas().setDtoLinks(dtoLinks);
 				linkPanel.updateLinks();
 				SCL.getCurrPrimeCanvas().getCanvasScreen().draw();
 			}
 		};
+		log.info("# Links = " + SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks().getDTOLinks().size());
 		ServiceUtilities.getEquipService().updateLinkNodes(SCL.getCurrSecCanvas().getDtoCanvas().getDtoLinks(), callback);
 		
 	}

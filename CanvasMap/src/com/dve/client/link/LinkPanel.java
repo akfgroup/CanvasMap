@@ -3,24 +3,14 @@ package com.dve.client.link;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.selector.SCL;
-import com.dve.client.utilities.ServiceUtilities;
-import com.dve.equip.client.utilities.EquipUtilities;
-import com.dve.shared.dto.canvas.DTOCanvas;
-import com.dve.shared.dto.canvas.DTOCanvases;
 import com.dve.shared.dto.canvas.DTOLink;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class LinkPanel extends Composite {
@@ -60,10 +50,6 @@ public class LinkPanel extends Composite {
 		
 		
 		initWidget(linkPanel);
-		
-	}
-	
-	public void addLink() {
 		
 	}
 

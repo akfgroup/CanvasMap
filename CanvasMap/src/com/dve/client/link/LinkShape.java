@@ -35,6 +35,7 @@ public class LinkShape {
 	public void nodeDown(int x, int y) {
 		log.info("nodeDn x=" + x + ", y=" + y);
 		if(dtoLinks==null) {
+			log.info("dtoLinks==null");
 			dtoLinks = new DTOLinks();
 			SCL.getCurrSecCanvas().getDtoCanvas().setDtoLinks(dtoLinks);
 		}
@@ -58,6 +59,9 @@ public class LinkShape {
 		p.setY(getRevCoord(y));
 		
 		dtoLinks.getDTOLinks().add(p);
+		
+		SCL.getCanvasDialog().updateCurrLinkNodes();
+		
 		draw();
 
 	}
@@ -75,6 +79,8 @@ public class LinkShape {
 			}
 
 		}
+		
+		SCL.getCanvasDialog().updateCurrLinkNodes();
 
 	}
 
@@ -159,7 +165,7 @@ public class LinkShape {
 		DTOLink prevP = null;
 		DTOLink currP = null;
 		
-		log.severe("Resetting Polygon!");
+//		log.severe("Resetting Polygon!");
 		polygon = new Polygon();
 
 		Iterator<DTOLink> it = dtoLinks.getDTOLinks().iterator();
@@ -183,7 +189,7 @@ public class LinkShape {
 				canvasScreen.context1.stroke();
 			}
 
-			log.info("Adding poly point = " + getCoord(p.getX()) + ", " + getCoord(p.getY()));
+//			log.info("Adding poly point = " + getCoord(p.getX()) + ", " + getCoord(p.getY()));
 			polygon.addPoint(getCoord(p.getX()), getCoord(p.getY()));
 			currP = p;
 
