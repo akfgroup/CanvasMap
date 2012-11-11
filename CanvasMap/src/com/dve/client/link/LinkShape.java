@@ -13,7 +13,6 @@ import com.dve.shared.dto.canvas.DTOLinks;
 
 public class LinkShape {
 
-	String color = "black";
 	int weight = 5;
 
 	int nodeRadius = 5;
@@ -111,7 +110,7 @@ public class LinkShape {
 
 	}
 
-	private void clear() {
+	public void clear() {
 		if(dtoLinks!=null && dtoLinks.getDTOLinks().size()>0) {
 			CanvasScreen canvasScreen = SCL.getCurrPrimeCanvas().getCanvasScreen();
 
@@ -159,7 +158,7 @@ public class LinkShape {
 				it = dtoLinks.getDTOLinks().iterator();
 				while(it.hasNext()) {
 					DTOLink p = it.next();
-					canvasScreen.context1.setFillStyle(color);
+					canvasScreen.context1.setFillStyle(SCL.getCurrPrimeCanvas().getEditLineColor());
 					canvasScreen.context1.beginPath();
 					canvasScreen.context1.arc(getCoord(p.getX()), getCoord(p.getY()), nodeRadius, 0, Math.PI * 2.0, true);
 					canvasScreen.context1.closePath();
@@ -173,11 +172,11 @@ public class LinkShape {
 
 			if(SCL.getCanvasDialog().isEdit()) {
 				canvasScreen.context1.setLineWidth(2);
-				canvasScreen.context1.setStrokeStyle(color);
+				canvasScreen.context1.setStrokeStyle(SCL.getCurrPrimeCanvas().getEditLineColor());
 				
 			} else {
 				canvasScreen.context1.setLineWidth(1);
-				canvasScreen.context1.setStrokeStyle("gray");
+				canvasScreen.context1.setStrokeStyle(SCL.getCurrPrimeCanvas().getUserLineColor());
 				
 			}
 			canvasScreen.context1.beginPath();
@@ -197,7 +196,7 @@ public class LinkShape {
 
 			if(highlight) {
 				canvasScreen.context1.setGlobalAlpha(0.3);
-				canvasScreen.context1.setFillStyle("yellow");
+				canvasScreen.context1.setFillStyle(SCL.getCurrPrimeCanvas().getUserShadeColor());
 				canvasScreen.context1.fill();
 			}
 
@@ -232,14 +231,12 @@ public class LinkShape {
 
 	public void highlight() {
 		clear();
-		color = "orange";
 		draw(true);
 
 	}
 
 	public void unhighlight() {
 		clear();
-		color = "black";
 		draw(false);
 
 	}

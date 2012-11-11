@@ -39,6 +39,14 @@ public class CanvasLabel extends Composite {
 
 	Label label = new Label();
 	
+	boolean litUp = false;
+	
+	String userLineColor = "gray";
+	String userShadeColor = "violet";
+	
+	String editLineColor = "black";
+	String editShadeColor = "transparent";
+	
 	Logger log = Logger.getLogger(CanvasLabel.class.getName());
 
 	public CanvasLabel(DTOCanvas dtoCanvas) {
@@ -205,6 +213,54 @@ public class CanvasLabel extends Composite {
 	public void highlighLink() {
 		if(linkShape!=null) {
 			linkShape.highlight();
+		}
+		
+	}
+	
+	public String getEditLineColor() {
+		return editLineColor;
+	}
+
+	public String getEditShadeColor() {
+		return editShadeColor;
+	}
+
+	public String getUserLineColor() {
+		return userLineColor;
+	}
+
+	public String getUserShadeColor() {
+		return userShadeColor;
+	}
+
+	public void hideLinks() {
+		litUp = false;
+		if(canvasLabels!=null) {
+			Iterator<CanvasLabel> it = canvasLabels.iterator();
+			while(it.hasNext()) {
+				CanvasLabel canvasLabel = it.next();
+				if(canvasLabel.getLinkShape()!=null) {
+					canvasLabel.getLinkShape().clear();
+					canvasLabel.getLinkShape().draw(false);
+					
+				}
+			}
+		}
+		
+	}
+
+	public void showLinks() {
+		if(canvasLabels!=null && !litUp) {
+			litUp = true;
+			Iterator<CanvasLabel> it = canvasLabels.iterator();
+			while(it.hasNext()) {
+				CanvasLabel canvasLabel = it.next();
+				if(canvasLabel.getLinkShape()!=null) {
+//					log.info("draw link");
+					canvasLabel.getLinkShape().clear();
+					canvasLabel.getLinkShape().draw(true);
+				}
+			}
 		}
 		
 	}

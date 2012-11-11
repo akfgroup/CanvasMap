@@ -8,12 +8,25 @@ import com.dve.client.canvas.dialog.CanvasDialog;
 import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.canvas.screen.CanvasScreen;
 import com.dve.client.login.Login;
+import com.dve.client.managers.admin.AdminDialog;
+import com.dve.client.managers.image.ImageManagerDialog;
 import com.dve.client.resource.CanvasResourcePanel;
 import com.dve.client.selector.SC;
 import com.dve.client.selector.SCL;
 import com.dve.client.utilities.FormUtilities;
 import com.dve.client.utilities.ServiceUtilities;
+import com.dve.equip.client.resources.BldgEqpResource;
+import com.dve.equip.client.resources.BldgResource;
+import com.dve.equip.client.resources.FlrResource;
+import com.dve.equip.client.resources.OrgResource;
+import com.dve.equip.client.resources.ResourcePanel;
+import com.dve.equip.client.resources.RmResource;
+import com.dve.shared.dto.building.DTOBuilding;
 import com.dve.shared.dto.canvas.DTOCanvases;
+import com.dve.shared.dto.org.DTOOrg;
+import com.dve.shared.dto.org.DTOOrgs;
+import com.dve.shared.dto.user.DTOUser;
+import com.dve.shared.enums.ASSETS;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -23,10 +36,15 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabBar;
@@ -44,11 +62,21 @@ public class CanvasMap implements EntryPoint {
 	
 	TabBar tabBar = new TabBar();
 	
+	FlexTable assetTable = new FlexTable();
+	
+	Label assetType1 = new Label("Asset Type");
+	Label assetType2 = new Label();
+	
+	Label assetName1 = new Label("Asset Name");
+	Label assetName2 = new Label();
+	
 	HorizontalPanel topPanel = new HorizontalPanel();
 	VerticalPanel centerPanel = new VerticalPanel();
 	HorizontalPanel btnPanel = new HorizontalPanel();
 	
 	LoginView loginView = new LoginView();
+	
+	boolean devMode = true;
 	
 	Logger log = Logger.getLogger(CanvasMap.class.getName());
 	
@@ -72,7 +100,21 @@ public class CanvasMap implements EntryPoint {
 		
 		DeferredCommand.addCommand(new Command() { 
 			public void execute() {
-				dologin();
+				if(!devMode) {
+					dologin();
+				} else {
+					DTOUser dtoUser = new DTOUser();
+					dtoUser.setUserID(1);
+					dtoUser.setUserName("dve");
+					dtoUser.setFirstName("David");
+					dtoUser.setLastName("Edelstein");
+					dtoUser.setEmailAddress("dedelstein@akf-eng.com");
+					dtoUser.setSandBoxProjId(23);
+					dtoUser.setOrgId(1);
+					SC.setCurrentUser(dtoUser);
+					startUp();
+					
+				}
 			}
 		}); 
 		
@@ -129,6 +171,17 @@ public class CanvasMap implements EntryPoint {
 		topPanel.add(tabBar);
 		topPanel.add(breadCrumb);
 		
+		assetTable.setBorderWidth(1);
+		assetTable.setWidget(0,0,assetType1);
+		assetTable.setWidget(0,1,assetType2);
+		assetTable.setWidget(0,2,assetName1);
+		assetTable.setWidget(0,3,assetName2);
+		
+		assetTable.getFlexCellFormatter().setWidth(0,0,"100px");
+		assetTable.getFlexCellFormatter().setWidth(0,2,"100px");
+		
+		topPanel.add(assetTable);
+		
 		mainPanel.setWidth("100%");
 		mainPanel.add(topPanel);
 		centerPanel.setWidth("100%");
@@ -146,6 +199,23 @@ public class CanvasMap implements EntryPoint {
 						centerPanel.clear();
 						centerPanel.add(SCL.getCurrPrimeCanvas().getResourcePanel());
 
+					}
+				}
+			}
+		});
+		
+		Event.addNativePreviewHandler(new NativePreviewHandler() {
+			public void onPreviewNativeEvent(NativePreviewEvent event) {
+				if(event.getTypeInt()==Event.ONKEYDOWN) {
+					if(event.getNativeEvent().getKeyCode()==17) {
+						if(SCL.getCurrPrimeCanvas()!=null) {
+							SCL.getCurrPrimeCanvas().showLinks();
+						}
+					}
+				}
+				if(event.getTypeInt()==Event.ONKEYUP) {
+					if(event.getNativeEvent().getKeyCode()==17) {
+						SCL.getCurrPrimeCanvas().hideLinks();
 					}
 				}
 			}
@@ -268,8 +338,13 @@ public class CanvasMap implements EntryPoint {
 		ServiceUtilities.getEquipService().getRootCanvases(callback);
 
 	}
-
-
+	
+	public void updateAssetLabel(String assetType, String assetName) {
+		assetType2.setText(assetType);
+		assetName2.setText(assetName);
+		
+	}
+			
 	public void display() {
 		new Timer(){
 			public void run() {

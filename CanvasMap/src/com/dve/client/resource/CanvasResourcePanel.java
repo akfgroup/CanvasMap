@@ -11,6 +11,7 @@ import com.dve.equip.client.resources.RmResource;
 import com.dve.shared.enums.ASSETS;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -57,55 +58,63 @@ public class CanvasResourcePanel extends Composite {
 
 	public void updateResourcePanel() {
 		centerPanel.clear();
+		SC.getCanvasMap().updateAssetLabel("","");
 		if(SCL.getCurrPrimeCanvas()!=null && SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId()!=-1) {
 			if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetType()==ASSETS.get("org")) {
 				OrgResource resource = new OrgResource();
+				resource.setCanvasId(SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 				resource.setAssetId(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId());
-				resource.setName(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 				ResourcePanel resourcePanel = new ResourcePanel(resource);
 				resourcePanel.update();
+				resourcePanel.getResource().updateAsset();
 				centerPanel.add(resourcePanel);
 				return;
 			}
 			if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetType()==ASSETS.get("building")) {
 				BldgResource resource = new BldgResource();
+				resource.setCanvasId(SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 				resource.setAssetId(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId());
-				resource.setName(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 				ResourcePanel resourcePanel = new ResourcePanel(resource);
 				resourcePanel.update();
+				resourcePanel.getResource().updateAsset();
 				centerPanel.add(resourcePanel);
 				return;
 			}
 			if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetType()==ASSETS.get("floor")) {
 				FlrResource resource = new FlrResource();
+				resource.setCanvasId(SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 				resource.setAssetId(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId());
-				resource.setName(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 				ResourcePanel resourcePanel = new ResourcePanel(resource);
 				resourcePanel.update();
+				resourcePanel.getResource().updateAsset();
 				centerPanel.add(resourcePanel);
 				return;
 			}
 			if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetType()==ASSETS.get("room")) {
 				RmResource resource = new RmResource();
+				resource.setCanvasId(SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 				resource.setAssetId(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId());
-				resource.setName(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 				ResourcePanel resourcePanel = new ResourcePanel(resource);
 				resourcePanel.update();
+				resourcePanel.getResource().updateAsset();
 				centerPanel.add(resourcePanel);
 				return;
 			}
 			if(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetType()==ASSETS.get("bldgequip")) {
+				Window.alert("bldgequip");
 				BldgEqpResource resource = new BldgEqpResource();
+				resource.setCanvasId(SCL.getCurrPrimeCanvas().getDtoCanvas().getId());
 				resource.setAssetId(SCL.getCurrPrimeCanvas().getDtoCanvas().getAssetId());
-				resource.setName(SCL.getCurrPrimeCanvas().getDtoCanvas().getId() + " - " + SCL.getCurrPrimeCanvas().getDtoCanvas().getName());
 				ResourcePanel resourcePanel = new ResourcePanel(resource);
 				resourcePanel.update();
+				resourcePanel.getResource().updateAsset();
 				centerPanel.add(resourcePanel);
 				return;
 			}
 			
-		}
-		
+		} 
+			
+	
 	}
 	
 }
