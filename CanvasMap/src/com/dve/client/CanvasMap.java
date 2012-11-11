@@ -76,7 +76,7 @@ public class CanvasMap implements EntryPoint {
 	
 	LoginView loginView = new LoginView();
 	
-	boolean devMode = true;
+	boolean devMode = false;
 	
 	Logger log = Logger.getLogger(CanvasMap.class.getName());
 	
