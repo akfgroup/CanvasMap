@@ -215,7 +215,7 @@ public class CanvasScreen extends Composite {
 			}
 
 		});
-		
+		//testing
 		vertPanel.add(absolutePanel);
 		vertPanel.add(imgPanel);
 		imgPanel.setVisible(false);
