@@ -14,5 +14,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/IssuesList"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FormsBoot"/>
 	<classpathentry kind="lib" path="C:/dve/Logs/LogConfig"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/gwt-html5-storage-1.0.1/gwt-html5-storage.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
