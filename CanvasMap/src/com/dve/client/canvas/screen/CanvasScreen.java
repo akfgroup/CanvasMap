@@ -180,6 +180,7 @@ public class CanvasScreen extends Composite {
 			}
 		});
 
+
 		canvas1.addMouseUpHandler(new MouseUpHandler() {
 			public void onMouseUp(MouseUpEvent event) {
 				mouseDn = false;
