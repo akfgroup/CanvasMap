@@ -3,7 +3,7 @@ package com.dve.client;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import com.dve.client._views.LoginView;
+import com.dve.client.activities.login.LoginViewImpl;
 import com.dve.client.canvas.dialog.CanvasDialog;
 import com.dve.client.canvas.dialog.CanvasLabel;
 import com.dve.client.canvas.screen.CanvasScreen;
@@ -74,7 +74,7 @@ public class CanvasMap implements EntryPoint {
 	VerticalPanel centerPanel = new VerticalPanel();
 	HorizontalPanel btnPanel = new HorizontalPanel();
 	
-	LoginView loginView = new LoginView();
+	LoginViewImpl loginView = new LoginViewImpl();
 	
 	boolean devMode = false;
 	
