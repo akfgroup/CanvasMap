@@ -9,8 +9,7 @@
   
   <servlet>
     <servlet-name>remoteLogging</servlet-name>
-<!-- <servlet-class>com.dve.server.MyRemoteLogginService</servlet-class> -->
-	<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+    <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -189,7 +188,7 @@
 
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>FormsUI_v2.html</welcome-file>
+    <welcome-file>CanvasMap.html</welcome-file>
   </welcome-file-list>
   
   <mime-mapping>
