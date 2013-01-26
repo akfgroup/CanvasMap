@@ -131,7 +131,7 @@ public class CanvasMap implements EntryPoint {
 				Long.parseLong(Storage.getLocalStorage().getItem("to"))>System.currentTimeMillis()) {
 
 			log.info("FormsUI_v2.checkWithServerIfSessionIsStillLegal() sessionID = " + Storage.getLocalStorage().getItem("sid"));
-			Login.checkRemoteSession(Storage.getLocalStorage().getItem("sid"));
+//			Login.checkRemoteSession(Storage.getLocalStorage().getItem("sid"));
 
 		} else {
 			log.info("FormsUI_v2.checkWithServerIfSessionIsStillLegal() sessionID = NULL!");
