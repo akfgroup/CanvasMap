@@ -74,7 +74,7 @@ public class CanvasMap implements EntryPoint {
 	VerticalPanel centerPanel = new VerticalPanel();
 	HorizontalPanel btnPanel = new HorizontalPanel();
 	
-	LoginView loginView = new LoginView();
+	LoginView loginView;
 	
 	boolean devMode = false;
 	
@@ -130,18 +130,18 @@ public class CanvasMap implements EntryPoint {
 				Storage.getLocalStorage().getItem("to") != null &&
 				Long.parseLong(Storage.getLocalStorage().getItem("to"))>System.currentTimeMillis()) {
 
-			log.info("FormsUI_v2.checkWithServerIfSessionIsStillLegal() sessionID = " + Storage.getLocalStorage().getItem("sid"));
+			log.info("CanvasMap.checkWithServerIfSessionIsStillLegal() sessionID = " + Storage.getLocalStorage().getItem("sid"));
 			Login.checkRemoteSession(Storage.getLocalStorage().getItem("sid"));
 
 		} else {
-			log.info("FormsUI_v2.checkWithServerIfSessionIsStillLegal() sessionID = NULL!");
+			log.info("CanvasMap.checkWithServerIfSessionIsStillLegal() sessionID = NULL!");
 			displaylogin(true);
 		}
 
 	}
 	
 	public void displaylogin(boolean reset) {
-		log.info("FormsUI_v2.displaylogin() 22");
+		log.info("CanvasMap.displaylogin() 22");
 		
 		SC.setCurrentUser(null);
 
